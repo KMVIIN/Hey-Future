@@ -49,7 +49,6 @@ export async function showRawNotification(title: string, body: string, tag = 'fu
     await registration.showNotification(title, {
       body,
       tag,
-      renotify: true,
       data: { url: '/' },
       requireInteraction: false,
     });
