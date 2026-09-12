@@ -1,14 +1,11 @@
 {
-  "name": "Future — Executive Assistant",
+  "name": "Future — Your AI Secretary",
   "short_name": "Future",
-  "description": "Your multilingual executive assistant.",
+  "description": "Think it. Say it. Done. An agentic AI secretary with safe approvals.",
   "start_url": "/",
-  "scope": "/",
   "display": "standalone",
-  "orientation": "portrait-primary",
-  "background_color": "#f5f6f8",
-  "theme_color": "#172033",
-  "categories": ["productivity", "business"],
+  "background_color": "#f7f8ff",
+  "theme_color": "#eef1ff",
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }

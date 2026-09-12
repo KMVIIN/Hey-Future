@@ -3,11 +3,11 @@
 import type { WebAction } from "@/lib/actions";
 
 const icons: Record<WebAction["kind"], string> = {
-  open_url: "↗", search_web: "⌕", phone: "☎", email: "✉", maps: "⌖", calendar: "▦", shopping: "◇", media: "▶", travel: "✈",
+  open_url: "↗", search_web: "⌕", phone: "☎", email: "✉", maps: "⌖", calendar: "▦", shopping: "◇", media: "▶", travel: "✈", translate: "文", news: "N", weather: "☁",
 };
 
 export default function ActionCard({ action, onDone }: { action: WebAction; onDone: () => void }) {
-  const button = action.kind === "phone" ? "Call" : action.kind === "email" ? "Compose" : action.kind === "maps" ? "Open Maps" : action.kind === "calendar" ? "Open Calendar" : action.kind === "search_web" ? "Search" : action.kind === "shopping" ? "Shop" : action.kind === "media" ? "Open YouTube" : action.kind === "travel" ? "Compare" : "Open";
+  const button = action.kind === "phone" ? "Call" : action.kind === "email" ? "Compose" : action.kind === "maps" ? "Open Maps" : action.kind === "calendar" ? "Open Calendar" : action.kind === "search_web" ? "Search" : action.kind === "shopping" ? "Shop" : action.kind === "media" ? "Open YouTube" : action.kind === "travel" ? "Compare" : action.kind === "translate" ? "Translate" : action.kind === "news" ? "News" : action.kind === "weather" ? "Weather" : "Open";
   return (
     <div className="actionCard">
       <div className="actionIcon">{icons[action.kind]}</div>

@@ -37,11 +37,11 @@ export default function FutureInput({ onSubmit, status, locale }: { onSubmit: (t
   return (
     <form className="commandComposer" onSubmit={submit}>
       <div className="composerTopline">
-        <div><div className="composerLabel">Ask Future</div><div className="composerSub">Remember · answer · research · act</div></div>
+        <div><div className="composerLabel">Ask Future</div><div className="composerSub">Understand natural speech · remember · research · act</div></div>
         <div className="languagePill">{localeName(detected)}</div>
       </div>
       <div className="composerRow">
-        <textarea className="commandInput" value={value} onChange={(e) => setValue(e.target.value)} placeholder="Ask a question, schedule something, open a site, play music or prepare a task…" rows={2} />
+        <textarea className="commandInput" value={value} onChange={(e) => setValue(e.target.value)} placeholder="Talk naturally: play music, find a gift, search a place, plan travel, remind me, or ask anything…" rows={2} />
         <VoiceButton locale={locale} voiceMode={voiceMode} onInterim={setInterim} onTranscript={(text) => { setValue((current) => current.trim() ? `${current.trim()} ${text}` : text); setInterim(""); }} />
         <button className="primary" type="submit">Send</button>
       </div>
@@ -49,7 +49,7 @@ export default function FutureInput({ onSubmit, status, locale }: { onSubmit: (t
         <div className="voiceModes">
           {([['auto','Auto'],['fr','FR'],['en','EN'],['th','TH']] as Array<[VoiceMode,string]>).map(([mode,label]) => <button type="button" key={mode} className={`voiceMode ${voiceMode===mode?'active':''}`} onClick={()=>setVoiceMode(mode)}>{label}</button>)}
         </div>
-        <span className="composerTip">Try: “4 + 4?”, “Play Stromae on YouTube”, or “Tomorrow at 10 call Alex”</span>
+        <span className="composerTip">Try: “เปิดเพลง La vie en rose ให้หน่อย”, “หาของขวัญให้แม่งบ 50 ยูโร”, or “พรุ่งนี้ 10 โมงเตือนให้โทรหา Alex”</span>
       </div>
       {safariHint && <div className="compatHint">{safariHint}</div>}
       {interim && <div className="liveTranscript">Listening: {interim}</div>}
