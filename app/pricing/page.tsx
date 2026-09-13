@@ -1,0 +1,16 @@
+"use client";
+import Link from "next/link";
+import { useState } from "react";
+
+const plans = [
+  {id:"free",name:"Free",price:"€0",desc:"Use Future without signing in for everyday basics",features:["Guest mode — no login required","Tasks, Calendar & Notes saved locally","Limited AI chat & web research","Upgrade any time"]},
+  {id:"personal",name:"Personal",price:"€9.99",desc:"For everyday personal productivity",features:["AI Secretary chat","100 web searches / month","Cloud sync & connected services","Dashboard customization"]},
+  {id:"pro",name:"Pro",price:"€19.99",desc:"For power users and freelancers",features:["Everything in Personal","300 web searches / month","Higher AI limits","Advanced workflows & customization"]},
+  {id:"business",name:"Business",price:"€39.99",desc:"For teams and business users",features:["Everything in Pro","1,000 web searches / month","High AI limits","Business workflows & admin visibility"]},
+];
+export default function PricingPage(){
+  const [busy,setBusy]=useState(""); const [message,setMessage]=useState("");
+  async function checkout(plan:string){if(plan==="free"){location.href="/";return}setBusy(plan);setMessage("");try{const r=await fetch("/api/billing/checkout",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({plan})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Checkout unavailable");if(d.url)location.href=d.url;}catch(e){setMessage(e instanceof Error?e.message:"Checkout unavailable");}finally{setBusy("");}}
+  async function trial(){setBusy("trial");setMessage("");try{const r=await fetch("/api/billing/start-trial",{method:"POST"});const d=await r.json();if(!r.ok)throw new Error(d.error||"Trial unavailable");location.href="/account";}catch(e){setMessage(e instanceof Error?e.message:"Trial unavailable");}finally{setBusy("");}}
+  return <main className="pricingPage"><header><div><h1>Future</h1><p>Your AI Secretary</p></div><div><Link href="/">Open app</Link> · <Link href="/login">Sign in</Link></div></header><section className="pricingHero"><h2>Choose the Future that fits your life</h2><p>Start free with no login. Create an account when you want cloud sync, connected services, a 30-day Pro trial or a paid plan.</p><button className="primaryBtn" onClick={trial} disabled={busy==="trial"}>{busy==="trial"?"Starting trial…":"Start 30-day Pro trial — no card"}</button></section><section className="pricingGrid">{plans.map(p=><article key={p.id} className="priceCard"><span className="planPill">{p.name}</span><h3>{p.price}<small>{p.id==="free"?" forever":"/month"}</small></h3><p>{p.desc}</p><ul>{p.features.map(f=><li key={f}>✓ {f}</li>)}</ul><button className="primaryBtn" onClick={()=>checkout(p.id)} disabled={busy===p.id}>{busy===p.id?"Opening…":p.id==="free"?"Use Future Free":"Choose "+p.name}</button></article>)}</section>{message&&<div className="pricingMessage">{message}</div>}<footer className="legalFooter"><span>© 2026 KÄN inc. · Future AI Assistance is operated by KÄN inc.</span><a href="/legal">Mentions légales</a><a href="/cgv">CGV</a><a href="/privacy">Privacy</a><a href="/cookies">Cookies</a><a href="/terms">Terms</a><a href="/cancel-subscription">Cancel subscription</a><a href="/contact">Contact</a><a href="/alerts-safety">Alerts & safety</a></footer></main>
+}

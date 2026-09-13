@@ -37,7 +37,7 @@ export type Workflow = {
   summary: string;
   locale: Locale;
   createdAt: string;
-  status: "draft" | "awaiting_approval" | "ready" | "done";
+  status: "draft" | "awaiting_approval" | "ready" | "paused" | "done";
   source: "ai" | "local";
   steps: WorkflowStep[];
 };
@@ -108,4 +108,25 @@ export function applyApproval(workflow: Workflow, approval: Approval, approved: 
   const stillWaiting = steps.some((step) => step.status === "waiting_approval");
   const allDone = steps.every((step) => step.status === "done" || step.status === "approved");
   return { ...workflow, steps, status: stillWaiting ? "awaiting_approval" : allDone ? "done" : "ready" };
+}
+
+const WORKFLOWS_KEY = "future.workflows.v1";
+const APPROVALS_KEY = "future.approvals.v1";
+
+export function loadWorkflows(): Workflow[] {
+  if (typeof window === "undefined") return [];
+  try { return JSON.parse(localStorage.getItem(WORKFLOWS_KEY) ?? "[]") as Workflow[]; } catch { return []; }
+}
+
+export function saveWorkflows(workflows: Workflow[]) {
+  if (typeof window !== "undefined") localStorage.setItem(WORKFLOWS_KEY, JSON.stringify(workflows));
+}
+
+export function loadApprovals(): Approval[] {
+  if (typeof window === "undefined") return [];
+  try { return JSON.parse(localStorage.getItem(APPROVALS_KEY) ?? "[]") as Approval[]; } catch { return []; }
+}
+
+export function saveApprovals(approvals: Approval[]) {
+  if (typeof window !== "undefined") localStorage.setItem(APPROVALS_KEY, JSON.stringify(approvals));
 }

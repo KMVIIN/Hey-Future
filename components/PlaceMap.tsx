@@ -1,0 +1,12 @@
+"use client";
+import { FormEvent, useMemo, useState } from "react";
+import type { Locale } from "@/lib/i18n";
+
+export default function PlaceMap({locale}:{locale:Locale}){
+ const [place,setPlace]=useState(""); const [activePlace,setActivePlace]=useState("cafe"); const [coords,setCoords]=useState<{lat:number;lng:number}|null>(null); const [message,setMessage]=useState("");
+ const mapSrc=useMemo(()=>`https://www.google.com/maps?q=${encodeURIComponent((coords?`${coords.lat},${coords.lng} `:"")+(activePlace||"cafe"))}&output=embed`,[activePlace,coords]);
+ function submit(e?:FormEvent){e?.preventDefault();if(!place.trim())return;setActivePlace(place.trim());setMessage("")}
+ function nearMe(){if(!navigator.geolocation){setMessage("Location is not available in this browser.");return}navigator.geolocation.getCurrentPosition(p=>{setCoords({lat:p.coords.latitude,lng:p.coords.longitude});setMessage(locale==="th"?"ใช้ตำแหน่งปัจจุบันแล้ว":"Current location is ready.")},()=>setMessage(locale==="th"?"ไม่ได้รับอนุญาตให้ใช้ตำแหน่ง":"Location permission was not granted."),{enableHighAccuracy:false,timeout:8000})}
+ function directions(){const origin=coords?`${coords.lat},${coords.lng}`:"My Location";window.open(`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(activePlace)}`,"_blank","noopener,noreferrer")}
+ return <section className="v32Card v41MapCard" id="map"><div className="v41MapHead"><div><strong>{locale==="th"?"Map & Places":"Map & Places"}</strong><small>{locale==="th"?"ค้นหาสถานที่จากช่องนี้โดยตรง ไม่เชื่อมกับ Search & Discover":"Search places here independently from Search & Discover."}</small></div><button onClick={nearMe}>◎ {locale==="th"?"ตำแหน่งของฉัน":"My location"}</button></div><form className="v41MapSearch" onSubmit={submit}><span>⌖</span><input value={place} onChange={e=>setPlace(e.target.value)} placeholder={locale==="th"?"ค้นหาสถานที่ ร้านอาหาร โรงแรม สนามบิน...":"Search a place, restaurant, hotel, airport..."}/><button>{locale==="th"?"ค้นหา":"Search"}</button></form>{message&&<div className="v32SearchMessage">{message}</div>}<iframe title="Place map" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src={mapSrc}/><div className="v32RouteBar"><div><strong>{activePlace}</strong><small>{coords?"Current location ready":"Use My location to calculate from where you are."}</small></div><button onClick={directions}>Directions ↗</button></div></section>
+}

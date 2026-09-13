@@ -1,0 +1,4 @@
+import Link from "next/link";
+export default function LegalShell({title,updated="14 September 2026",children}:{title:string;updated?:string;children:React.ReactNode}){
+ return <main className="legalPage"><header><Link href="/">← Future</Link><div><strong>Future AI Assistance</strong><span>KÄN inc. · Entrepreneur individuel (EI)</span></div></header><article><h1>{title}</h1><p className="legalUpdated">Last updated: {updated}</p>{children}</article><footer className="legalFooter"><span>© 2026 KÄN inc. · Future AI Assistance</span><Link href="/legal">Mentions légales</Link><Link href="/cgv">CGV</Link><Link href="/privacy">Privacy</Link><Link href="/cookies">Cookies</Link><Link href="/terms">Terms</Link><Link href="/cancel-subscription">Cancel subscription</Link><Link href="/contact">Contact</Link><Link href="/alerts-safety">Alerts & safety</Link></footer></main>
+}

@@ -4,15 +4,30 @@ import { useEffect, useMemo, useState } from "react";
 import FutureInput from "@/components/FutureInput";
 import Timeline from "@/components/Timeline";
 import NotificationCenter from "@/components/NotificationCenter";
-import ConversationPanel from "@/components/ConversationPanel";
 import ActionCard from "@/components/ActionCard";
 import InstallPanel from "@/components/InstallPanel";
 import EclipseBrand from "@/components/EclipseBrand";
 import WorkflowPanel from "@/components/WorkflowPanel";
+import CalendarMonthView from "@/components/CalendarMonthView";
+import SchedulePanel from "@/components/SchedulePanel";
+import NotesPanel from "@/components/NotesPanel";
+import SearchDiscover from "@/components/SearchDiscover";
+import PlaceMap from "@/components/PlaceMap";
+import CustomizeLayoutPanel from "@/components/CustomizeLayoutPanel";
 import ApprovalCenter from "@/components/ApprovalCenter";
 import ConnectionsPanel, { type EmailConnectionState } from "@/components/ConnectionsPanel";
 import EmailInboxCard from "@/components/EmailInboxCard";
 import ContactsHub from "@/components/ContactsHub";
+import WorkspaceModal from "@/components/WorkspaceModal";
+import HistoryPanel from "@/components/HistoryPanel";
+import OrdersPanel from "@/components/OrdersPanel";
+import WhatsAppPanel from "@/components/WhatsAppPanel";
+import MiniChat from "@/components/MiniChat";
+import MapLauncher from "@/components/MapLauncher";
+import AccountingPanel from "@/components/AccountingPanel";
+import SaaSGate from "@/components/SaaSGate";
+import CloudSync from "@/components/CloudSync";
+import { loadOrders, saveOrders, type FutureOrder } from "@/lib/orders";
 import { ClarificationError } from "@/lib/parser";
 import { parseCommands } from "@/lib/multicommand";
 import { isLikelyDuplicate, loadItems, materialize, purgeExpiredCompleted, saveItems } from "@/lib/storage";
@@ -27,7 +42,7 @@ import type { FutureItem } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 import { copy } from "@/lib/i18n";
 import { buildEmailWorkflow, localWorkflowFromIntent, requestAgentPlan } from "@/lib/agent";
-import { applyApproval, approvalsForWorkflow, type Approval, type Workflow } from "@/lib/workflows";
+import { applyApproval, approvalsForWorkflow, loadApprovals, loadWorkflows, saveApprovals, saveWorkflows, type Approval, type Workflow } from "@/lib/workflows";
 import { contactIntentToAction, findContact, loadContacts, parseContactIntent, saveContacts, type FutureContact } from "@/lib/contacts";
 import type { EmailMessageSummary } from "@/lib/email-types";
 
@@ -42,22 +57,62 @@ export default function Home() {
   const [actions, setActions] = useState<WebAction[]>([]);
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [approvals, setApprovals] = useState<Approval[]>([]);
+  const [workflowHydrated, setWorkflowHydrated] = useState(false);
   const [agentMode, setAgentMode] = useState<"local" | "ai">("local");
   const [contacts, setContacts] = useState<FutureContact[]>([]);
   const [emailConnection, setEmailConnection] = useState<EmailConnectionState>({ configured: false, connected: false });
   const [emailMessages, setEmailMessages] = useState<EmailMessageSummary[]>([]);
   const [emailLoading, setEmailLoading] = useState(false);
+  const [selectedCalendarDate, setSelectedCalendarDate] = useState(() => new Date());
+  const [orders, setOrders] = useState<FutureOrder[]>([]);
+  const [activeWorkspace, setActiveWorkspace] = useState<null | "tasks" | "calendar" | "email" | "whatsapp" | "search" | "map" | "travel" | "shopping" | "orders" | "contacts" | "accounting" | "workflow" | "history" | "connections" | "approval" | "settings" | "customize">(null);
+  const [accountMode, setAccountMode] = useState<{signedIn:boolean;plan:string}>({signedIn:false,plan:"guest"});
   const t = copy[locale];
 
   useEffect(() => {
     setItems(loadItems());
     setContacts(loadContacts());
+    setWorkflows(loadWorkflows());
+    setApprovals(loadApprovals());
+    setOrders(loadOrders());
+    setWorkflowHydrated(true);
     const stored = localStorage.getItem("future.locale") as Locale | null;
     const detected: Locale = navigator.language.startsWith("th") ? "th" : navigator.language.startsWith("fr") ? "fr" : "en";
     const nextLocale = stored && ["en", "fr", "th"].includes(stored) ? stored : detected;
     setLocale(nextLocale);
     refreshEmailConnection();
+    try {
+      const raw = localStorage.getItem("future.layout.v2");
+      if (raw) {
+        const x = JSON.parse(raw);
+        document.documentElement.dataset.futureTheme = x.theme || "lavender";
+        document.documentElement.dataset.futureDensity = x.density || "comfortable";
+        document.documentElement.dataset.futureLayout = x.layout || "classic";
+        document.documentElement.dataset.futureBgScope = x.bgScope || "none";
+        document.documentElement.dataset.futureBgPreset = x.bgPreset || "none";
+        if (x.bgImage) document.documentElement.style.setProperty("--future-user-bg", `url(${x.bgImage})`);
+      }
+    } catch {}
   }, []);
+
+
+  useEffect(() => {
+    fetch("/api/account/usage", { cache: "no-store" }).then(async (r) => {
+      if (!r.ok) { setAccountMode({ signedIn: false, plan: "guest" }); return; }
+      const d = await r.json();
+      setAccountMode({ signedIn: true, plan: String(d.plan || "free") });
+    }).catch(() => setAccountMode({ signedIn: false, plan: "guest" }));
+  }, []);
+
+  useEffect(() => {
+    if (!workflowHydrated) return;
+    saveWorkflows(workflows);
+  }, [workflows, workflowHydrated]);
+
+  useEffect(() => {
+    if (!workflowHydrated) return;
+    saveApprovals(approvals);
+  }, [approvals, workflowHydrated]);
 
   useEffect(() => {
     registerFutureServiceWorker();
@@ -114,6 +169,7 @@ export default function Home() {
   }
   function persist(next: FutureItem[]) { const clean = purgeExpiredCompleted(next); setItems(clean); saveItems(clean); }
   function persistContacts(next: FutureContact[]) { setContacts(next); saveContacts(next); }
+  function persistOrders(next: FutureOrder[]) { setOrders(next); saveOrders(next); }
   function say(text: string, commandLocale: Locale) {
     setMessages((prev) => [...prev, makeMessage("assistant", text)]);
     speakFuture(text, commandLocale);
@@ -173,7 +229,8 @@ export default function Home() {
 
     // Future 3.0: ask the optional server-side AI planner first.
     // If no OPENAI_API_KEY exists, the route returns immediately and Day 2.3 remains the fallback.
-    const agentPlan = await requestAgentPlan(combinedText, commandLocale);
+    const likelyAgentAction = /(?:send|email|mail|book|booking|buy|purchase|pay|schedule|remind|call|message|reserve|cancel|ส่ง|อีเมล|จอง|ซื้อ|จ่าย|เตือน|โทร|ข้อความ|réserver|acheter|payer|envoyer|rappeler|appeler)/i.test(combinedText);
+    const agentPlan = likelyAgentAction ? await requestAgentPlan(combinedText, commandLocale) : { enabled: false, mode: "fallback" as const, reply: undefined, workflow: undefined };
     if (agentPlan.workflow) {
       setAgentMode("ai");
       setWorkflows((prev) => [...prev, agentPlan.workflow!]);
@@ -211,15 +268,21 @@ export default function Home() {
 
     const answers: string[] = [];
     for (const question of questionCommands) {
-      const answered = await answerQuestion(question.text, commandLocale);
-      if (answered?.text) {
-        answers.push(answered.text);
-        setMessages((prev) => [...prev, makeMessage("assistant", answered.text)]);
-        speakFuture(answered.text, commandLocale);
-        if (answered.sourceUrl) {
-          const sourceAction: WebAction = { kind: "open_url", title: commandLocale === "fr" ? "Voir la source" : commandLocale === "th" ? "เปิดแหล่งข้อมูล" : "Open source", detail: "Wikipedia", url: answered.sourceUrl, locale: commandLocale };
-          setActions((prev) => [...prev, sourceAction]);
-        }
+      let aiText = "";
+      try {
+        const response = await fetch("/api/chat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ text: question.text, locale: commandLocale }) });
+        const data = await response.json();
+        if (response.ok && typeof data?.answer === "string") aiText = data.answer.trim();
+        else if (response.status === 429) aiText = commandLocale === "th" ? "คุณใช้โควตา AI ของเดือนนี้ครบแล้ว สามารถอัปเกรดแพ็กเกจได้ที่ Account" : commandLocale === "fr" ? "Votre quota IA mensuel est atteint. Vous pouvez changer de formule dans Account." : "You've reached this month's AI allowance. You can upgrade in Account.";
+      } catch {}
+      if (!aiText) {
+        const answered = await answerQuestion(question.text, commandLocale);
+        if (answered?.text) aiText = answered.text;
+      }
+      if (aiText) {
+        answers.push(aiText);
+        setMessages((prev) => [...prev, makeMessage("assistant", aiText)]);
+        speakFuture(aiText, commandLocale);
       }
     }
 
@@ -265,7 +328,13 @@ export default function Home() {
       } else if (answers.length) {
         reply = answers[answers.length - 1];
       } else {
-        reply = commandLocale === "th" ? "ฉันยังตอบเรื่องนี้แบบออฟไลน์ไม่ได้ ลองให้ฉันค้นหาเว็บแทนได้" : commandLocale === "fr" ? "Je ne peux pas encore répondre à cela hors ligne. Je peux lancer une recherche web à la place." : "I can’t answer that locally yet. I can open a web search instead.";
+        try {
+          const response = await fetch("/api/chat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ text: combinedText, locale: commandLocale }) });
+          const data = await response.json();
+          reply = response.ok && typeof data?.answer === "string" ? data.answer : (commandLocale === "th" ? "ฉันยังตอบคำถามนี้ไม่ได้ในตอนนี้" : commandLocale === "fr" ? "Je ne peux pas répondre à cette question pour le moment." : "I can't answer that right now.");
+        } catch {
+          reply = commandLocale === "th" ? "ฉันยังตอบคำถามนี้ไม่ได้ในตอนนี้" : commandLocale === "fr" ? "Je ne peux pas répondre à cette question pour le moment." : "I can't answer that right now.";
+        }
       }
       setStatus(reply);
       if (!answers.length || incomingItems.length || nextActions.length) say(reply, commandLocale);
@@ -316,7 +385,28 @@ export default function Home() {
     setStatus(reply); say(reply, locale);
   }
 
+  function addCalendarItem(item: Omit<FutureItem, "id" | "createdAt">) {
+    const incoming: FutureItem = { ...item, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
+    persist([...items, incoming]);
+    resetNotifiedStateForItem(incoming.id);
+  }
+  function updateCalendarItem(id: string, patch: Partial<FutureItem>) {
+    resetNotifiedStateForItem(id);
+    persist(items.map((item) => item.id === id ? { ...item, ...patch } : item));
+  }
+  function deleteWorkflow(id: string) {
+    setWorkflows((prev) => prev.filter((workflow) => workflow.id !== id));
+    setApprovals((prev) => prev.filter((approval) => approval.workflowId !== id));
+  }
+  function toggleWorkflowPause(id: string) {
+    setWorkflows((prev) => prev.map((workflow) => workflow.id === id ? { ...workflow, status: workflow.status === "paused" ? (workflow.steps.some((s) => s.status === "waiting_approval") ? "awaiting_approval" : "ready") : "paused" } : workflow));
+  }
+  function editWorkflow(id: string, title: string, summary: string) {
+    setWorkflows((prev) => prev.map((workflow) => workflow.id === id ? { ...workflow, title, summary } : workflow));
+  }
+
   function deleteItem(id: string) { resetNotifiedStateForItem(id); persist(items.filter((item) => item.id !== id)); }
+  function restoreItem(id: string) { persist(items.map((item) => item.id === id ? { ...item, completedAt: undefined } : item)); }
   function completeItem(id: string) {
     resetNotifiedStateForItem(id);
     persist(items.map((item) => item.id === id ? { ...item, completedAt: new Date().toISOString() } : item));
@@ -332,25 +422,39 @@ export default function Home() {
   const nextItem = useMemo(() => items.filter((item)=>!item.completedAt).map((item) => ({ item, date: new Date(item.startsAt ?? item.dueAt ?? item.remindAt ?? 0) })).filter((x) => x.date.getTime() >= Date.now()).sort((a,b)=>a.date.getTime()-b.date.getTime())[0], [items]);
 
   return (
-    <main className="futureAppShell">
+    <SaaSGate>
+      <CloudSync />
+      <main className="futureAppShell">
       <aside className="futureSidebar">
         <div className="sideBrand"><EclipseBrand /></div>
+        <div className="sideNavTabs" aria-label="Sidebar navigation shortcuts">
+          <button onClick={()=>document.querySelector<HTMLElement>(".sideNav")?.scrollTo({top:0,behavior:"smooth"})}>Main</button>
+          <button onClick={()=>document.querySelector<HTMLElement>(".sideNav")?.scrollTo({top:700,behavior:"smooth"})}>More</button>
+        </div>
         <nav className="sideNav">
-          <a className="active" href="#home">⌂ <span>Home</span></a>
-          <a href="#tasks">☑ <span>Tasks</span></a>
-          <a href="#calendar">▦ <span>Calendar</span></a>
-          <a href="#email">✉ <span>Email</span></a>
-          <a href="#search">⌕ <span>Search</span></a>
-          <a href="#travel">✈ <span>Travel</span></a>
-          <a href="#shopping">◇ <span>Shopping</span></a>
-          <a href="#contacts">☎ <span>Calls & Contacts</span></a>
-          <a href="#workflow">⌘ <span>Workflows</span></a>
+          <button className="active" onClick={()=>setActiveWorkspace(null)}>⌂ <span>Home</span></button>
+          <button onClick={()=>setActiveWorkspace("tasks")}>☑ <span>Tasks</span></button>
+          <button onClick={()=>setActiveWorkspace("calendar")}>▦ <span>Calendar</span></button>
+          <button onClick={()=>setActiveWorkspace("email")}>✉ <span>Email</span></button>
+          <button onClick={()=>setActiveWorkspace("whatsapp")}>◉ <span>WhatsApp</span><b className="navNew">NEW</b></button>
+          <button onClick={()=>setActiveWorkspace("search")}>⌕ <span>Search & Discover</span></button>
+          <button onClick={()=>setActiveWorkspace("map")}>⌖ <span>Map & Places</span></button>
+          <button onClick={()=>setActiveWorkspace("travel")}>✈ <span>Travel & Booking</span></button>
+          <button onClick={()=>setActiveWorkspace("shopping")}>◇ <span>Shopping</span></button>
+          <button onClick={()=>setActiveWorkspace("orders")}>▣ <span>Orders & Deliveries</span></button>
+          <button onClick={()=>setActiveWorkspace("contacts")}>☎ <span>Calls & Contacts</span></button>
+          <button onClick={()=>setActiveWorkspace("accounting")}>▤ <span>Accounting</span><b className="navNew">NEW</b></button>
+          <button onClick={()=>setActiveWorkspace("workflow")}>⌘ <span>Workflows</span></button>
+          <button onClick={()=>setActiveWorkspace("history")}>◴ <span>History</span></button>
           <div className="sideDivider" />
-          <a href="#connections">◎ <span>Connections</span></a>
-          <a href="#approval">✓ <span>Approval Center</span>{approvals.length > 0 && <b className="navCount">{approvals.length}</b>}</a>
+          <button onClick={()=>setActiveWorkspace("connections")}>◎ <span>Connections</span></button>
+          <button onClick={()=>setActiveWorkspace("approval")}>✓ <span>Approval Center</span>{approvals.length > 0 && <b className="navCount">{approvals.length}</b>}</button>
+          <button onClick={()=>setActiveWorkspace("settings")}>⚙ <span>Settings</span></button>
+          <button onClick={()=>setActiveWorkspace("customize")}>✦ <span>Customize Layout</span>{accountMode.plan!=="guest"&&accountMode.plan!=="free"&&<b className="navNew">PRO</b>}</button>
+          <button onClick={()=>{location.href=accountMode.signedIn?"/account":"/login"}}>◌ <span>{accountMode.signedIn?"Account & Usage":"Sign in (optional)"}</span></button>
         </nav>
         <div className="sideFooter">
-          <span>Future 3.0</span><small>Private by design</small>
+          <span>Future 4.6</span><small>Launch Candidate</small>
         </div>
       </aside>
 
@@ -359,64 +463,51 @@ export default function Home() {
           <div className="topLinks"><a href="#home" className="active">Home</a><a href="#features">Features</a><a href="#workflow">How it works</a><a href="#approval">Privacy</a></div>
           <div className="topActions">
             <div className="localeSwitch">{([['fr','FR'],['en','EN'],['th','TH']] as [Locale,string][]).map(([key,label]) => <button key={key} className={locale===key?'active':''} onClick={()=>changeLocale(key)}>{label}</button>)}</div>
+            <a className="accountTopLink" href={accountMode.signedIn?"/account":"/login"}>{accountMode.signedIn?"Account":"Guest · Sign in"}</a>
             <span className="emailStatusPill">{emailConnection.connected ? `✉ ${emailConnection.email}` : "Email not connected"}</span>
           </div>
         </header>
 
-        <section className="futureHero" id="home">
-          <div className="heroCopy">
-            <span className="eyebrow">YOUR AI SECRETARY</span>
-            <h1>Think it.<br/>Say it.<br/><em>Done.</em></h1>
-            <p>Natural language. Real actions. A calmer, smarter day — powered by Future.</p>
-            <div className="heroBadges"><span>Natural conversation</span><span>Works on iPhone</span><span>{agentMode === "ai" ? "AI planner on" : "Free fallback ready"}</span></div>
+        <section className="v32Hero" id="home">
+          <div className="v32Greeting">
+            <div className="v32OrbMini" />
+            <div><h1>{locale === "th" ? "สวัสดี วันนี้ให้ Future ช่วยอะไรดี?" : locale === "fr" ? "Bonjour, que voulez-vous faire aujourd’hui ?" : "Good morning. What would you like to do today?"}</h1><p>Think it. Say it. Done.</p></div>
           </div>
-          <div className="heroOrbWrap"><div className="heroOrb"><div className="heroOrbCore" /></div><span className="handNote">More time<br/>for what<br/>matters. ♡</span></div>
-          <div className="heroAskCard">
-            <h3>A calmer day<br/>starts here.</h3>
-            <FutureInput onSubmit={handleCommand} status={status} locale={locale} />
-            <div className="quickPrompts">
-              <button onClick={()=>handleCommand("Find a birthday gift for my mom under 50 euros", locale)}>◇ Find a birthday gift</button>
-              <button onClick={()=>handleCommand("Find flights to Bangkok next month", locale)}>✈ Find flights</button>
-              <button onClick={()=>handleCommand("Check my latest emails", locale)}>✉ Check latest emails</button>
-              <button onClick={()=>handleCommand("Remind me to call Alex tomorrow at 10", locale)}>◎ Remind me to call Alex</button>
-            </div>
+          <div className="v32AskWrap"><FutureInput onSubmit={handleCommand} status={status} locale={locale} /></div>
+          <div className="v32Quick">
+            <button onClick={()=>handleCommand(locale === "th" ? "พรุ่งนี้มีอะไรบ้าง" : "What do I have tomorrow?", locale)}>{locale === "th" ? "พรุ่งนี้มีอะไรบ้าง?" : "Tomorrow's schedule"}</button>
+            <button onClick={()=>handleCommand(locale === "th" ? "เพิ่มนัดหมายวันศุกร์" : "Add an appointment Friday", locale)}>{locale === "th" ? "เพิ่มนัดหมาย" : "Add appointment"}</button>
+            <button onClick={()=>handleCommand("Check my latest emails", locale)}>{locale === "th" ? "สรุปอีเมลล่าสุด" : "Latest email summary"}</button>
+            <a href="#search">Find anything on the web</a>
           </div>
         </section>
 
-        <section className="featureStrip" id="features">
-          {[
-            ["▦","Manage","Your Schedule"],["✉","Email","& Messages"],["⌕","Find Anything","on the Web"],["✈","Plan Travel","& Compare"],["◇","Find & Shop","with approval"],["☎","Calls &","Contacts"],["▶","Play on","YouTube"],["文","Translate","TH / EN / FR"],["☷","Notes","& To-do"],["⌘","Custom","Workflows"]
-          ].map(([icon,a,b])=><div className="featureTile" key={a}><span>{icon}</span><strong>{a}</strong><small>{b}</small></div>)}
+        <section className="v32SummaryRow">
+          <button onClick={()=>setActiveWorkspace("tasks")}><span>☑</span><div><small>SCHEDULE & TASKS</small><strong>{todayItems.length}</strong><em>items today</em></div></button>
+          <button onClick={()=>setActiveWorkspace("travel")}><span>✈</span><div><small>TRAVEL & BOOKING</small><strong>{items.filter(i=>/flight|hotel|บิน|โรงแรม/i.test(i.title)).length}</strong><em>saved plans</em></div></button>
+          <button onClick={()=>setActiveWorkspace("email")}><span>✉</span><div><small>EMAIL</small><strong>{emailMessages.length}</strong><em>recent loaded</em></div></button>
+          <button onClick={()=>setActiveWorkspace("workflow")}><span>⌘</span><div><small>WORKFLOWS</small><strong>{workflows.length}</strong><em>active / saved</em></div></button>
         </section>
 
-        <section className="dashboardGrid">
-          <div className="dashboardCard scheduleCard" id="tasks">
-            <div className="panelHeading"><div><span className="eyebrow">SCHEDULE & TASKS</span><h3>Today</h3></div><span>{items.length} saved</span></div>
-            <Timeline items={items} onDelete={deleteItem} onComplete={completeItem} locale={locale} />
-          </div>
+        <section className="v32Workspace">
+          <CalendarMonthView items={items} locale={locale} selectedDate={selectedCalendarDate} onSelectDate={setSelectedCalendarDate} onAdd={addCalendarItem} onUpdate={updateCalendarItem} onDelete={deleteItem} />
+          <SchedulePanel items={items} selectedDate={selectedCalendarDate} locale={locale} onAdd={addCalendarItem} onDelete={deleteItem} onComplete={completeItem} />
+          <NotesPanel locale={locale} />
+        </section>
 
-          <div className="dashboardCard discoverCard" id="search">
-            <div className="panelHeading"><div><span className="eyebrow">SEARCH & DISCOVER</span><h3>Find what you need</h3></div></div>
-            <div className="searchMock">⌕ Find a cozy café near me with good Wi-Fi</div>
-            <div className="mapMock"><div className="mapRoad one"/><div className="mapRoad two"/><span className="mapPin">●</span></div>
-            <div className="resultMock"><strong>Café Kitsuné</strong><span>4.5 ★ · 200 m</span></div>
-            <div className="resultMock"><strong>Holybelly</strong><span>4.7 ★ · 350 m</span></div>
-            <button className="softButton" onClick={()=>window.open("https://www.google.com/search?q=cafe+near+me", "_blank")}>More results on Google →</button>
-          </div>
+        <section className="operationsGrid v46PriorityOperations">
+          <div id="workflow"><WorkflowPanel workflows={workflows} locale={locale} onOpen={(url) => window.open(url, "_blank", "noopener,noreferrer")} onDelete={deleteWorkflow} onTogglePause={toggleWorkflowPause} onEdit={editWorkflow} /></div>
+          <div id="approval"><ApprovalCenter approvals={approvals} locale={locale} onDecision={handleApproval} /></div>
+        </section>
 
-          <div className="dashboardCard travelCard" id="travel">
-            <div className="panelHeading"><div><span className="eyebrow">TRAVEL & BOOKING</span><h3>Compare before booking</h3></div></div>
-            <div className="travelSearch">⌕ Find flights to Bangkok next month</div>
-            {[['Air France','€620','12h 15m · 1 stop'],['Thai Airways','€650','11h 45m · Non-stop'],['Emirates','€680','13h 10m · 1 stop']].map(([name,price,meta])=><div className="flightRow" key={name}><div><strong>{name}</strong><span>{meta}</span></div><b>{price}</b><button>View</button></div>)}
-            <small className="approvalHint">I’ll wait for your confirmation before booking.</small>
-          </div>
-
+        <section className="v42DiscoverSplit" id="discover">
+          <SearchDiscover locale={locale} />
           <EmailInboxCard locale={locale} messages={emailMessages} loading={emailLoading} connected={emailConnection.connected} onCheck={()=>checkInbox(locale)} />
         </section>
 
-        <section className="operationsGrid">
-          <div id="workflow"><WorkflowPanel workflows={workflows} locale={locale} onOpen={(url) => window.open(url, "_blank", "noopener,noreferrer")} /></div>
-          <div id="approval"><ApprovalCenter approvals={approvals} locale={locale} onDecision={handleApproval} /></div>
+        <section className="v32ServiceGrid">
+          <div className="dashboardCard" id="travel"><div className="panelHeading"><div><span className="eyebrow">TRAVEL & BOOKING</span><h3>Your saved trips & bookings</h3></div></div><div className="travelSearch">⌕ Find flights, hotels, cars…</div>{items.filter(i=>/flight|hotel|บิน|โรงแรม|trip|travel/i.test(i.title)).slice(0,4).map(i=><div className="flightRow" key={i.id}><div><strong>{i.title}</strong><span>{new Date(i.startsAt ?? i.dueAt ?? i.remindAt ?? Date.now()).toLocaleString()}</span></div><button onClick={()=>document.getElementById("search")?.scrollIntoView({behavior:"smooth"})}>Search</button></div>)}<small className="approvalHint">Future will always ask before booking or paying.</small></div>
+          <AccountingPanel locale={locale} />
         </section>
 
         <section className="secondaryGrid">
@@ -429,17 +520,40 @@ export default function Home() {
           {actions.map((action, index) => <ActionCard key={`${action.kind}-${action.url}-${index}`} action={action} onDone={() => setActions((prev) => prev.filter((_, i) => i !== index))} />)}
         </section>}
 
-        <section className="lowerGrid">
-          <ConversationPanel messages={messages} />
+        <section className="v33UtilityRow">
           <NotificationCenter locale={locale} />
           <InstallPanel />
         </section>
 
         {duplicate && <section className="duplicateCard"><div><span className="eyebrow">POSSIBLE DUPLICATE</span><strong>{duplicate.existing.title}</strong><span>{duplicate.incoming.title}</span></div><div className="actions"><button className="ghost" onClick={()=>{setDuplicate(null);setStatus(t.keep)}}>{t.keep}</button><button className="ghost" onClick={()=>{persist([...items,duplicate.incoming]);setDuplicate(null);setStatus(t.both)}}>{t.both}</button><button className="ghost" onClick={()=>{persist(items.map((item)=>item.id===duplicate.existing.id?{...duplicate.incoming,id:item.id,createdAt:item.createdAt}:item));setDuplicate(null);setStatus(t.merge)}}>{t.merge}</button></div></section>}
 
+        <MapLauncher locale={locale} onOpen={()=>setActiveWorkspace("map")} />
+        <MiniChat messages={messages} locale={locale} status={status} onSubmit={handleCommand} />
+
+        {activeWorkspace && <WorkspaceModal title={{tasks:"Tasks",calendar:"Calendar",email:"Email",whatsapp:"WhatsApp",search:"Search & Discover",map:"Map & Places",travel:"Travel & Booking",shopping:"Shopping",orders:"Orders & Deliveries",contacts:"Calls & Contacts",accounting:"Accounting",workflow:"Workflows",history:"History",connections:"Connections",approval:"Approval Center",settings:"Settings",customize:"Customize Layout"}[activeWorkspace]} subtitle="A focused workspace with more room to read and work." onClose={()=>setActiveWorkspace(null)}>
+          {activeWorkspace === "tasks" && <SchedulePanel items={items} selectedDate={selectedCalendarDate} locale={locale} onAdd={addCalendarItem} onDelete={deleteItem} onComplete={completeItem} />}
+          {activeWorkspace === "calendar" && <CalendarMonthView items={items} locale={locale} selectedDate={selectedCalendarDate} onSelectDate={setSelectedCalendarDate} onAdd={addCalendarItem} onUpdate={updateCalendarItem} onDelete={deleteItem} />}
+          {activeWorkspace === "email" && <EmailInboxCard locale={locale} messages={emailMessages} loading={emailLoading} connected={emailConnection.connected} onCheck={()=>checkInbox(locale)} />}
+          {activeWorkspace === "whatsapp" && <WhatsAppPanel />}
+          {activeWorkspace === "search" && <SearchDiscover locale={locale} />}
+          {activeWorkspace === "map" && <PlaceMap locale={locale} />}
+          {activeWorkspace === "travel" && <div className="dashboardCard"><div className="panelHeading"><div><span className="eyebrow">TRAVEL & BOOKING</span><h3>Your saved trips & bookings</h3></div></div>{items.filter(i=>/flight|hotel|บิน|โรงแรม|trip|travel/i.test(i.title)).map(i=><div className="flightRow" key={i.id}><div><strong>{i.title}</strong><span>{new Date(i.startsAt ?? i.dueAt ?? i.remindAt ?? Date.now()).toLocaleString()}</span></div></div>)}</div>}
+          {activeWorkspace === "shopping" && <div className="v33PanelPage"><div className="v33PageIntro"><div><span>SHOPPING</span><h3>Research, compare, then approve</h3><p>Future can research products and prepare a purchase. Payment remains behind Approval Center.</p></div></div><SearchDiscover locale={locale}/></div>}
+          {activeWorkspace === "orders" && <OrdersPanel orders={orders} tasks={items} onChange={persistOrders} onOpenTask={()=>setActiveWorkspace("tasks")} />}
+          {activeWorkspace === "contacts" && <ContactsHub contacts={contacts} locale={locale} onChange={persistContacts} />}
+          {activeWorkspace === "accounting" && <AccountingPanel locale={locale} />}
+          {activeWorkspace === "workflow" && <WorkflowPanel workflows={workflows} locale={locale} onOpen={(url)=>window.open(url,"_blank","noopener,noreferrer")} onDelete={deleteWorkflow} onTogglePause={toggleWorkflowPause} onEdit={editWorkflow} />}
+          {activeWorkspace === "history" && <HistoryPanel items={items} locale={locale} onRestore={restoreItem} onDelete={deleteItem} />}
+          {activeWorkspace === "connections" && <div className="v33ConnectionsStack"><ConnectionsPanel locale={locale} email={emailConnection} onRefresh={refreshEmailConnection}/><WhatsAppPanel/></div>}
+          {activeWorkspace === "approval" && <ApprovalCenter approvals={approvals} locale={locale} onDecision={handleApproval} />}
+          {activeWorkspace === "settings" && <div className="v33Settings"><NotificationCenter locale={locale}/><InstallPanel/></div>}
+          {activeWorkspace === "customize" && <CustomizeLayoutPanel paid={accountMode.plan!=="guest"&&accountMode.plan!=="free"}/>}
+        </WorkspaceModal>}
+
         {liveAlert && <div className="liveReminder" role="alert"><div><strong>Future</strong><div>{liveAlert.title}</div></div><button className="ghost" onClick={()=>setLiveAlert(null)}>OK</button></div>}
-        <footer className="executiveFooter">Future 3.0 Phase 3 · Real Outlook connection · visible approvals · eclipse interface.</footer>
+        <footer className="executiveFooter"><div>© 2026 KÄN inc. · Future AI Assistance</div><nav><a href="/legal">Mentions légales</a><a href="/cgv">CGV</a><a href="/privacy">Privacy</a><a href="/cookies">Cookies</a><a href="/terms">Terms</a><a href="/cancel-subscription">Cancel subscription</a><a href="/contact">Contact</a><a href="/alerts-safety">Alerts & safety</a></nav></footer>
       </div>
     </main>
+    </SaaSGate>
   );
 }

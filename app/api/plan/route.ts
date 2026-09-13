@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createServerSupabase } from "@/lib/supabase/server";
+import { estimateOpenAICost, getUsageAccess, recordUsage } from "@/lib/usage";
 
 const allowedKinds = ["research","open_url","contact_lookup","calendar_read","calendar_write","email_read","email_draft","email_send","booking","payment","note"];
 
@@ -26,6 +28,11 @@ export async function POST(request: NextRequest) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return NextResponse.json({ enabled: false, mode: "fallback", reason: "OPENAI_API_KEY not configured" });
 
+  const supabase = await createServerSupabase();
+  let userId: string | undefined;
+  if (supabase) { const { data: { user } } = await supabase.auth.getUser(); userId = user?.id; }
+  if (userId) { const usage = await getUsageAccess(userId); if (usage.aiMessages >= usage.limits.aiMessages) return NextResponse.json({ enabled: false, mode: "fallback", reason: "AI monthly limit reached" }, { status: 429 }); }
+
   const instructions = `You are Future, an executive AI secretary planner. Interpret natural language in Thai, English and French. Convert the user's request into a concise multi-step workflow only when it genuinely benefits from multiple steps. Never claim an external action happened. Payment, purchase, booking, cancellation, and email sending MUST require explicit user approval. If the user only asks to check/read/show/summarize email, use email_read only and NEVER add email_send. Only create email_send when the user explicitly asks to send. Return JSON only with this shape: {"reply":"short helpful reply in the user's language","workflow":{"title":"...","summary":"...","steps":[{"kind":"research|open_url|contact_lookup|calendar_read|calendar_write|email_read|email_draft|email_send|booking|payment|note","title":"...","detail":"...","url":"optional https URL","requiresApproval":true|false,"payload":{"to":"optional recipient email","subject":"optional subject","body":"optional message"}}]}}. For research steps, use a safe relevant Google/Google Travel/YouTube URL when useful. If the request is simple and should be handled by the local assistant instead, return {"reply":"","workflow":null}. Locale: ${locale}.`;
 
   try {
@@ -44,6 +51,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ enabled: true, mode: "fallback", error: errorText.slice(0, 300) });
     }
     const data = await apiResponse.json();
+    const inputTokens = Number(data?.usage?.input_tokens || 0);
+    const outputTokens = Number(data?.usage?.output_tokens || 0);
+    if (userId) await recordUsage({ userId, kind: "ai_message", model: process.env.OPENAI_MODEL || "gpt-5.6-luna", inputTokens, outputTokens, estimatedCostUsd: estimateOpenAICost(inputTokens, outputTokens, 0), metadata: { surface: "planner" } });
     const parsed = safeJson(extractText(data));
     if (!parsed?.workflow?.steps?.length) return NextResponse.json({ enabled: true, mode: "fallback", reply: parsed?.reply || "" });
     parsed.workflow.steps = parsed.workflow.steps
