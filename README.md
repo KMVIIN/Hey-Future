@@ -1,39 +1,28 @@
-# Future 3.0 Phase 3 — Outlook Edition
+# Future 4.7 — Responsive Search & Maps
 
-Future is moving from a rule-based assistant toward an agentic AI secretary while keeping sensitive actions under user control.
+# Future 4.6 — Your AI Secretary
 
-## What is included
+Launch-candidate package for Future AI Assistance.
 
-- Eclipse-style Future dashboard and mobile-first PWA UI.
-- Natural-language assistant with the existing free fallback when no OpenAI API key is configured.
-- Multi-step workflows and an Approval Center.
-- Future Contacts Hub with manual contacts and `.vcf` import.
-- Real Outlook / Microsoft 365 OAuth connection through Microsoft Graph.
-- Recent Inbox reading from the connected Microsoft account.
-- Real email sending only after the user approves a visible To / From / Subject / Message review.
-- Browser reminders, voice input, voice replies, web actions, shopping/travel research starters, and existing Day 2.x features.
+## Main product
+- AI chat + voice/text command handling
+- Tasks, calendar, reminders, notes and history
+- Workflows + Approval Center
+- Search & Discover with free public search fallback
+- Outlook inbox/connect/send flow
+- Map launcher and travel/shopping research
+- Contacts, orders, WhatsApp handoff/API-ready routes
+- Accounting income/expense ledger + CSV export
+- Lavender / Galaxy / Sky themes
+- Supabase accounts/cloud state, Stripe subscriptions and 30-day Pro trial
 
-## Outlook OAuth setup
+## Launch check
+Open `/api/beta-readiness` after deployment. Read `LAUNCH-TOMORROW.md` before enabling paid public checkout.
 
-See `OUTLOOK-SETUP.md`.
+## Local development
+1. Copy `.env.example` to `.env.local` and add only the services you are testing.
+2. `npm install`
+3. `npm run dev`
+4. Open `http://localhost:3000`
 
-Required Vercel environment variables:
-
-- `MICROSOFT_CLIENT_ID`
-- `MICROSOFT_CLIENT_SECRET`
-- `MICROSOFT_TENANT_ID=common`
-- `EMAIL_SESSION_SECRET`
-
-Optional:
-
-- `OPENAI_API_KEY` for the AI planner. Without it Future falls back to the local/free planner.
-
-The Microsoft OAuth flow requests delegated `User.Read`, `Mail.Read`, and `Mail.Send` permissions plus OIDC scopes needed for sign-in and refresh tokens. Tokens are encrypted before being stored in an HttpOnly Secure cookie for this MVP.
-
-## Important safety behavior
-
-Checking or summarizing email never creates a send action. Sending is a separate workflow step and must appear in Approval Center with the recipient, sender, subject, and full message before execution. The server endpoint also requires an explicit approval flag.
-
-## Before public launch
-
-For a multi-user subscription product, move tokens and user state from browser/cookie MVP storage into a secure database-backed account system, add encryption-at-rest and key rotation, revocation, audit logs, privacy/delete controls, and production OAuth verification/consent requirements.
+Never commit `.env.local`, API secrets, `node_modules` or `.next`.
