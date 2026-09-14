@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
-import webpush from "@mmmike/web-push";
+import webpush from "web-push";
 import { deletePushSubscription, getPushSubscription, vapidConfig } from "@/lib/push-server";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  let endpoint = "";
   try {
     const body = await request.json();
-    const endpoint = String(body?.endpoint || "");
+    endpoint = String(body?.endpoint || "");
     if (!endpoint.startsWith("https://")) return NextResponse.json({ error: "Invalid endpoint" }, { status: 400 });
     const subscription = await getPushSubscription(endpoint);
     if (!subscription) return NextResponse.json({ error: "This device is not subscribed" }, { status: 404 });
@@ -22,11 +23,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   } catch (error: unknown) {
     const statusCode = typeof error === "object" && error && "statusCode" in error ? Number((error as { statusCode?: number }).statusCode) : 0;
-    if (statusCode === 404 || statusCode === 410) {
-      try {
-        const body = await request.clone().json();
-        if (body?.endpoint) await deletePushSubscription(String(body.endpoint));
-      } catch {}
+    if ((statusCode === 404 || statusCode === 410) && endpoint) {
+      try { await deletePushSubscription(endpoint); } catch {}
     }
     return NextResponse.json({ error: error instanceof Error ? error.message : "Test push failed" }, { status: 500 });
   }
