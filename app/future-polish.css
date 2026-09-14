@@ -157,6 +157,71 @@ html[data-future-theme="galaxy"] .futureTopbar {
   color:#ffe36a !important;
 }
 
+/* Galaxy hard override: no gray or white cards/fields anywhere in app surfaces. */
+html[data-future-theme="galaxy"] .emailInbox,
+html[data-future-theme="galaxy"] .emailList,
+html[data-future-theme="galaxy"] .emailRow,
+html[data-future-theme="galaxy"] .emailRow > div,
+html[data-future-theme="galaxy"] .emailAccountPicker,
+html[data-future-theme="galaxy"] .emailProviderSwitch,
+html[data-future-theme="galaxy"] .emailProviderButton,
+html[data-future-theme="galaxy"] .emptyMini,
+html[data-future-theme="galaxy"] .travelSearch,
+html[data-future-theme="galaxy"] .flightRow,
+html[data-future-theme="galaxy"] .accountingPanel,
+html[data-future-theme="galaxy"] .accountingSummary,
+html[data-future-theme="galaxy"] .accountingCard,
+html[data-future-theme="galaxy"] .accountingRow,
+html[data-future-theme="galaxy"] .connectionRow,
+html[data-future-theme="galaxy"] .contactsHub,
+html[data-future-theme="galaxy"] .connectionList,
+html[data-future-theme="galaxy"] .searchResult,
+html[data-future-theme="galaxy"] .searchResultCard,
+html[data-future-theme="galaxy"] .placeCard,
+html[data-future-theme="galaxy"] .workspaceModal,
+html[data-future-theme="galaxy"] .workspaceModalContent,
+html[data-future-theme="galaxy"] .v33PanelPage {
+  background:#000 !important;
+  background-image:none !important;
+  color:#ffe36a !important;
+  border-color:rgba(255,227,106,.42) !important;
+  box-shadow:none !important;
+}
+
+html[data-future-theme="galaxy"] input,
+html[data-future-theme="galaxy"] textarea,
+html[data-future-theme="galaxy"] select,
+html[data-future-theme="galaxy"] option,
+html[data-future-theme="galaxy"] .softButton,
+html[data-future-theme="galaxy"] .connectButton,
+html[data-future-theme="galaxy"] .miniDisconnect,
+html[data-future-theme="galaxy"] .emailProviderButton {
+  background:#000 !important;
+  background-image:none !important;
+  color:#ffe36a !important;
+  border-color:rgba(255,227,106,.48) !important;
+  box-shadow:none !important;
+}
+
+html[data-future-theme="galaxy"] .emailProviderButton.active,
+html[data-future-theme="galaxy"] .softButton:hover,
+html[data-future-theme="galaxy"] .connectButton:hover {
+  background:#ffe36a !important;
+  color:#000 !important;
+  border-color:#ffe36a !important;
+}
+html[data-future-theme="galaxy"] .emailProviderButton.active *,
+html[data-future-theme="galaxy"] .softButton:hover *,
+html[data-future-theme="galaxy"] .connectButton:hover * { color:#000 !important; }
+
+html[data-future-theme="galaxy"] .emailRow *,
+html[data-future-theme="galaxy"] .flightRow *,
+html[data-future-theme="galaxy"] .connectionRow *,
+html[data-future-theme="galaxy"] .accountingPanel *,
+html[data-future-theme="galaxy"] .accountingCard * {
+  color:#ffe36a !important;
+}
+
 /* Keep floating Future orb above bottom navigation without covering content. */
 @media(max-width:900px){
   .futureChatLauncher{right:16px !important;bottom:96px !important;}
