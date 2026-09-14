@@ -1,0 +1,108 @@
+/* Future 4.8 — Galaxy = pure black + warm yellow only. */
+html[data-future-theme="galaxy"]{
+  --v32-purple:#ffe680;
+  --v32-purple2:#ffd24a;
+  --v32-ink:#ffe680;
+  --v32-muted:#ffe680;
+  --v32-line:rgba(255,230,128,.34);
+  --v32-card:#000;
+  --future-line:rgba(255,230,128,.34);
+  --future-card:#000;
+  --future-muted:#ffe680;
+  --future-page-bg:#000;
+  color-scheme:dark;
+}
+html[data-future-theme="galaxy"],
+html[data-future-theme="galaxy"] body,
+html[data-future-theme="galaxy"] .futureAppShell,
+html[data-future-theme="galaxy"] .futureMain{background:#000!important;color:#ffe680!important}
+html[data-future-theme="galaxy"] .futureAppShell{
+  background-image:radial-gradient(circle at 82% 9%,rgba(255,230,128,.32) 0 1px,transparent 2px),radial-gradient(circle at 63% 18%,rgba(255,230,128,.24) 0 1px,transparent 2px),radial-gradient(circle at 28% 12%,rgba(255,230,128,.20) 0 1px,transparent 2px)!important;
+  background-size:170px 170px,230px 230px,290px 290px!important;
+}
+html[data-future-theme="galaxy"] .futureSidebar,
+html[data-future-theme="galaxy"] .futureTopbar,
+html[data-future-theme="galaxy"] .mobileDrawer,
+html[data-future-theme="galaxy"] .mobileMenu,
+html[data-future-theme="galaxy"] .mobileBottomNav,
+html[data-future-theme="galaxy"] .bottomNav,
+html[data-future-theme="galaxy"] .v47MobileNav,
+html[data-future-theme="galaxy"] .v47MobileDrawer,
+html[data-future-theme="galaxy"] .v32Card,
+html[data-future-theme="galaxy"] .dashboardCard,
+html[data-future-theme="galaxy"] .v41SearchOnly,
+html[data-future-theme="galaxy"] .v41MapCard,
+html[data-future-theme="galaxy"] .emailInbox,
+html[data-future-theme="galaxy"] .workflowPanel,
+html[data-future-theme="galaxy"] .approvalPanel,
+html[data-future-theme="galaxy"] .connectionsPanel,
+html[data-future-theme="galaxy"] .accountingPanel,
+html[data-future-theme="galaxy"] .v33MiniChat,
+html[data-future-theme="galaxy"] .v44MiniMap,
+html[data-future-theme="galaxy"] .v33ChatModal,
+html[data-future-theme="galaxy"] .v33WorkspaceModal,
+html[data-future-theme="galaxy"] .v42Customize section,
+html[data-future-theme="galaxy"] .sideFooter{background:#000!important;color:#ffe680!important;border-color:rgba(255,230,128,.34)!important;box-shadow:none!important}
+html[data-future-theme="galaxy"] h1,
+html[data-future-theme="galaxy"] h2,
+html[data-future-theme="galaxy"] h3,
+html[data-future-theme="galaxy"] h4,
+html[data-future-theme="galaxy"] strong,
+html[data-future-theme="galaxy"] b,
+html[data-future-theme="galaxy"] p,
+html[data-future-theme="galaxy"] small,
+html[data-future-theme="galaxy"] span,
+html[data-future-theme="galaxy"] label,
+html[data-future-theme="galaxy"] a,
+html[data-future-theme="galaxy"] em{color:#ffe680!important}
+html[data-future-theme="galaxy"] input,
+html[data-future-theme="galaxy"] textarea,
+html[data-future-theme="galaxy"] select,
+html[data-future-theme="galaxy"] .v32SearchBar,
+html[data-future-theme="galaxy"] .v41MapSearch,
+html[data-future-theme="galaxy"] .commandComposer,
+html[data-future-theme="galaxy"] .futureInputCard,
+html[data-future-theme="galaxy"] .v32Day,
+html[data-future-theme="galaxy"] .v32Weekdays,
+html[data-future-theme="galaxy"] .v32NoteEditor,
+html[data-future-theme="galaxy"] .v32InlineForm{background:#000!important;color:#ffe680!important;border-color:rgba(255,230,128,.34)!important}
+html[data-future-theme="galaxy"] input::placeholder,html[data-future-theme="galaxy"] textarea::placeholder{color:rgba(255,230,128,.62)!important}
+html[data-future-theme="galaxy"] button,
+html[data-future-theme="galaxy"] .sideNav button,
+html[data-future-theme="galaxy"] .sideNav a{background:#000!important;color:#ffe680!important;border-color:rgba(255,230,128,.36)!important}
+html[data-future-theme="galaxy"] .sideNav button.active,
+html[data-future-theme="galaxy"] .sideNav a.active,
+html[data-future-theme="galaxy"] .primaryBtn,
+html[data-future-theme="galaxy"] .v32PrimarySm,
+html[data-future-theme="galaxy"] .v32SearchBar button,
+html[data-future-theme="galaxy"] .v41MapSearch button,
+html[data-future-theme="galaxy"] .v33MiniChat>b,
+html[data-future-theme="galaxy"] .v44MiniMap>b,
+html[data-future-theme="galaxy"] .primaryRoute,
+html[data-future-theme="galaxy"] .navNew,
+html[data-future-theme="galaxy"] .v42FreeBadge{background:#ffe680!important;color:#000!important;border-color:#ffe680!important}
+html[data-future-theme="galaxy"] .v32OrbMini,
+html[data-future-theme="galaxy"] .v33MiniOrb,
+html[data-future-theme="galaxy"] .brandOrb,
+html[data-future-theme="galaxy"] .eclipseOrb{background:radial-gradient(circle,#000 0 44%,#ffe680 53%,#ffd24a 60%,rgba(255,230,128,.18) 68%,transparent 73%)!important;box-shadow:0 0 28px rgba(255,230,128,.44)!important}
+html[data-future-theme="galaxy"] .swatch.galaxy{background:radial-gradient(circle,#000 44%,#ffe680 55%,#000 68%)!important;box-shadow:0 0 12px rgba(255,230,128,.45)!important}
+@media(max-width:900px){
+  html[data-future-theme="galaxy"] body,
+  html[data-future-theme="galaxy"] .futureSidebar,
+  html[data-future-theme="galaxy"] .mobileBottomNav,
+  html[data-future-theme="galaxy"] .bottomNav,
+  html[data-future-theme="galaxy"] .v47MobileNav{background:#000!important;color:#ffe680!important}
+  html[data-future-theme="galaxy"] .mobileBottomNav,
+  html[data-future-theme="galaxy"] .bottomNav,
+  html[data-future-theme="galaxy"] .v47MobileNav{border-top:1px solid rgba(255,230,128,.36)!important}
+  html[data-future-theme="galaxy"] .mobileBottomNav button,
+  html[data-future-theme="galaxy"] .bottomNav button,
+  html[data-future-theme="galaxy"] .v47MobileNav button{background:#000!important;color:#ffe680!important}
+  html[data-future-theme="galaxy"] .mobileBottomNav button.active,
+  html[data-future-theme="galaxy"] .bottomNav button.active,
+  html[data-future-theme="galaxy"] .v47MobileNav button.active{background:#ffe680!important;color:#000!important}
+}
+
+/* Install / Download page: same black + yellow system. */
+.futureDownloadPage{min-height:100vh;background:#000;color:#ffe680;padding:clamp(22px,5vw,70px);font-family:Arial,sans-serif}
+.futureDownloadHero,.futureInstallPanel,.futureDownloadFooter{width:min(920px,100%);margin:0 auto}.futureDownloadHero{text-align:center;padding:32px 0}.futureDownloadOrb{width:84px;height:84px;margin:0 auto 18px;border-radius:50%;background:radial-gradient(circle,#000 0 44%,#ffe680 53%,#ffd24a 61%,rgba(255,230,128,.18) 69%,transparent 74%);box-shadow:0 0 34px rgba(255,230,128,.45)}.futureEyebrow{letter-spacing:.18em;font-size:11px;font-weight:800}.futureDownloadHero h1{font-size:clamp(34px,7vw,64px);margin:10px 0;color:#ffe680}.futureDownloadHero p{max-width:680px;margin:0 auto;line-height:1.65;color:#ffe680}.futureInstallPanel{border:1px solid rgba(255,230,128,.38);border-radius:24px;padding:20px;background:#000}.futureInstallStatus{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 14px;border:1px solid rgba(255,230,128,.28);border-radius:14px}.futureInstallStatus span{font-size:10px;letter-spacing:.12em}.futureInstallStatus b{border:1px solid #ffe680;border-radius:999px;padding:6px 9px}.futureInstallSteps{display:grid;gap:12px;margin-top:16px}.futureInstallSteps article{display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:center;padding:16px;border:1px solid rgba(255,230,128,.25);border-radius:16px;background:#000}.futureInstallSteps article>span{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#ffe680;color:#000;font-weight:900}.futureInstallSteps h2{margin:0;color:#ffe680;font-size:17px}.futureInstallSteps p{margin:4px 0 0;color:#ffe680;font-size:13px;line-height:1.4}.futureInstallSteps button{border:1px solid #ffe680!important;background:#ffe680!important;color:#000!important;border-radius:12px;padding:10px 14px;font-weight:800}.futureInstallSteps button:disabled{opacity:.45}.futureInstallMessage,.futureInstallNote{margin-top:14px;border:1px solid rgba(255,230,128,.28);border-radius:14px;padding:13px;color:#ffe680;line-height:1.55}.futureDownloadFooter{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;padding:24px 0}.futureDownloadFooter a{color:#ffe680}@media(max-width:680px){.futureDownloadPage{padding:18px 14px 34px}.futureInstallSteps article{grid-template-columns:36px 1fr}.futureInstallSteps article button{grid-column:1/-1;width:100%}.futureInstallStatus{grid-template-columns:1fr}.futureDownloadHero{padding-top:18px}}
