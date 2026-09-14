@@ -2,8 +2,9 @@ import crypto from "node:crypto";
 
 export const EMAIL_COOKIE = "future_email_session";
 
+export type EmailProvider = "microsoft" | "google";
 export type EmailSession = {
-  provider: "microsoft";
+  provider: EmailProvider;
   accessToken: string;
   refreshToken?: string;
   expiresAt: number;
@@ -19,6 +20,14 @@ export const MICROSOFT_SCOPES = [
   "User.Read",
   "Mail.Read",
   "Mail.Send",
+].join(" ");
+
+export const GOOGLE_SCOPES = [
+  "openid",
+  "profile",
+  "email",
+  "https://www.googleapis.com/auth/gmail.readonly",
+  "https://www.googleapis.com/auth/gmail.send",
 ].join(" ");
 
 function secretKey() {
@@ -46,7 +55,7 @@ export function openEmailSession(value?: string | null): EmailSession | null {
     decipher.setAuthTag(tag);
     const json = Buffer.concat([decipher.update(encrypted), decipher.final()]).toString("utf8");
     const session = JSON.parse(json) as EmailSession;
-    return session.provider === "microsoft" ? session : null;
+    return session.provider === "microsoft" || session.provider === "google" ? session : null;
   } catch {
     return null;
   }
@@ -64,18 +73,16 @@ export async function refreshMicrosoftSession(session: EmailSession): Promise<Em
   const clientSecret = process.env.MICROSOFT_CLIENT_SECRET;
   if (!clientId || !clientSecret) throw new Error("Microsoft OAuth is not configured");
 
-  const body = new URLSearchParams({
-    client_id: clientId,
-    client_secret: clientSecret,
-    refresh_token: session.refreshToken,
-    grant_type: "refresh_token",
-    scope: MICROSOFT_SCOPES,
-  });
-
   const response = await fetch(`https://login.microsoftonline.com/${tenant()}/oauth2/v2.0/token`, {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
-    body,
+    body: new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      refresh_token: session.refreshToken,
+      grant_type: "refresh_token",
+      scope: MICROSOFT_SCOPES,
+    }),
   });
 
   if (!response.ok) throw new Error("Could not refresh Outlook access");
@@ -88,15 +95,49 @@ export async function refreshMicrosoftSession(session: EmailSession): Promise<Em
   };
 }
 
+export async function refreshGoogleSession(session: EmailSession): Promise<EmailSession> {
+  if (session.expiresAt > Date.now() + 60_000) return session;
+  if (!session.refreshToken) throw new Error("Email session expired. Reconnect Gmail.");
+
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  if (!clientId || !clientSecret) throw new Error("Google OAuth is not configured");
+
+  const response = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      refresh_token: session.refreshToken,
+      grant_type: "refresh_token",
+    }),
+  });
+  if (!response.ok) throw new Error("Could not refresh Gmail access");
+  const data = await response.json();
+  return {
+    ...session,
+    accessToken: data.access_token,
+    expiresAt: Date.now() + Number(data.expires_in || 3600) * 1000,
+  };
+}
+
 export async function microsoftGraph(session: EmailSession, path: string, init?: RequestInit) {
   const fresh = await refreshMicrosoftSession(session);
   const url = path.startsWith("http") ? path : `https://graph.microsoft.com/v1.0${path}`;
   const response = await fetch(url, {
     ...init,
-    headers: {
-      ...(init?.headers || {}),
-      authorization: `Bearer ${fresh.accessToken}`,
-    },
+    headers: { ...(init?.headers || {}), authorization: `Bearer ${fresh.accessToken}` },
+  });
+  return { response, session: fresh };
+}
+
+export async function googleGmail(session: EmailSession, path: string, init?: RequestInit) {
+  const fresh = await refreshGoogleSession(session);
+  const url = path.startsWith("http") ? path : `https://gmail.googleapis.com/gmail/v1${path}`;
+  const response = await fetch(url, {
+    ...init,
+    headers: { ...(init?.headers || {}), authorization: `Bearer ${fresh.accessToken}` },
   });
   return { response, session: fresh };
 }
