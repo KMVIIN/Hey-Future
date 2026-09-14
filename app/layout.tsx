@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./galaxy-theme.css";
+import "./galaxy-mobile-fixes.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hey-future.vercel.app"),
