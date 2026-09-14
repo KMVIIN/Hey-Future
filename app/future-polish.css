@@ -1,229 +1,27 @@
-/* Future 4.8 final polish — shared layout + Galaxy contrast. */
+/* Future 4.9 polish — shared layout + Galaxy pure black/yellow. */
+@media (min-width:901px){.v44MiniMap{display:none!important}}
+@media (max-width:900px){
+.commandComposer .composerRow,.v32AskWrap .composerRow,.v33ChatInput .composerRow{display:grid!important;grid-template-columns:minmax(0,1fr) 58px!important;gap:10px!important;align-items:stretch!important}
+.commandComposer .commandInput,.v32AskWrap .commandInput,.v33ChatInput .commandInput{grid-column:1!important;min-width:0!important;width:100%!important;min-height:118px!important;resize:none!important}
+.commandComposer .voice,.v32AskWrap .voice,.v33ChatInput .voice{grid-column:2!important;width:58px!important;min-width:58px!important;height:100%!important;min-height:118px!important;padding:0!important;align-self:stretch!important;display:grid!important;place-items:center!important}
+.commandComposer .primary,.v32AskWrap .primary,.v33ChatInput .primary{grid-column:1/-1!important;width:100%!important;min-height:58px!important}
+.futureChatLauncher{right:16px!important;bottom:96px!important}.futureMain{padding-bottom:128px!important}}
 
-/* Desktop: Map & Places remains in the left navigation only. */
-@media (min-width: 901px) {
-  .v44MiniMap { display:none !important; }
-}
+.sideNav button{font-size:0!important}.sideNav button::before{width:26px;flex:0 0 26px;text-align:center;font-size:18px;line-height:1}.sideNav button span{font-size:14px!important}.sideNav button b{font-size:9px!important}
+.sideNav button:nth-of-type(1)::before{content:"🏠"}.sideNav button:nth-of-type(2)::before{content:"✅"}.sideNav button:nth-of-type(3)::before{content:"📅"}.sideNav button:nth-of-type(4)::before{content:"✉️"}.sideNav button:nth-of-type(5)::before{content:"💬"}.sideNav button:nth-of-type(6)::before{content:"🔎"}.sideNav button:nth-of-type(7)::before{content:"🗺️"}.sideNav button:nth-of-type(8)::before{content:"✈️"}.sideNav button:nth-of-type(9)::before{content:"💎"}.sideNav button:nth-of-type(10)::before{content:"📦"}.sideNav button:nth-of-type(11)::before{content:"📞"}.sideNav button:nth-of-type(12)::before{content:"🧾"}.sideNav button:nth-of-type(13)::before{content:"🧩"}.sideNav button:nth-of-type(14)::before{content:"🕘"}.sideNav button:nth-of-type(15)::before{content:"🔗"}.sideNav button:nth-of-type(16)::before{content:"📄"}.sideNav button:nth-of-type(17)::before{content:"⚙️"}.sideNav button:nth-of-type(18)::before{content:"✨"}.sideNav button:nth-of-type(19)::before{content:"👤"}
+.mobileBottomNav button{font-size:0!important}.mobileBottomNav button::before{display:block;font-size:19px;line-height:1;margin-bottom:5px}.mobileBottomNav button span{font-size:10px!important}.mobileBottomNav button:nth-child(1)::before{content:"🏠"}.mobileBottomNav button:nth-child(2)::before{content:"✅"}.mobileBottomNav button:nth-child(3)::before{content:"🔎"}.mobileBottomNav button:nth-child(4)::before{content:"📅"}.mobileBottomNav button:nth-child(5)::before{content:"☰"}
 
-/* Voice composer: give text the space, keep microphone compact at the far edge. */
-@media (max-width: 900px) {
-  .commandComposer .composerRow,
-  .v32AskWrap .composerRow,
-  .v33ChatInput .composerRow {
-    display:grid !important;
-    grid-template-columns:minmax(0,1fr) 58px !important;
-    gap:10px !important;
-    align-items:stretch !important;
-  }
-  .commandComposer .commandInput,
-  .v32AskWrap .commandInput,
-  .v33ChatInput .commandInput {
-    grid-column:1 !important;
-    min-width:0 !important;
-    width:100% !important;
-    min-height:118px !important;
-    resize:none !important;
-  }
-  .commandComposer .voice,
-  .v32AskWrap .voice,
-  .v33ChatInput .voice {
-    grid-column:2 !important;
-    width:58px !important;
-    min-width:58px !important;
-    height:100% !important;
-    min-height:118px !important;
-    padding:0 !important;
-    align-self:stretch !important;
-    display:grid !important;
-    place-items:center !important;
-  }
-  .commandComposer .primary,
-  .v32AskWrap .primary,
-  .v33ChatInput .primary {
-    grid-column:1 / -1 !important;
-    width:100% !important;
-    min-height:58px !important;
-  }
-}
+/* Email account buttons */
+.emailProviderSwitch{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 14px}.emailProviderButton{display:flex;align-items:center;gap:9px;min-width:190px;padding:9px 12px;border-radius:14px;border:1px solid rgba(100,80,220,.2);cursor:pointer}.emailProviderEmoji{font-size:22px}.emailProviderText{display:flex;flex-direction:column;align-items:flex-start;min-width:0}.emailProviderText small{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.emailProviderButton.active{font-weight:700}
 
-/* Navigation emojis — same visual language on desktop and mobile. */
-.sideNav button { font-size:0 !important; }
-.sideNav button::before { width:26px; flex:0 0 26px; text-align:center; font-size:18px; line-height:1; }
-.sideNav button span { font-size:14px !important; }
-.sideNav button b { font-size:9px !important; }
-.sideNav button:nth-of-type(1)::before{content:"🏠"}
-.sideNav button:nth-of-type(2)::before{content:"✅"}
-.sideNav button:nth-of-type(3)::before{content:"📅"}
-.sideNav button:nth-of-type(4)::before{content:"✉️"}
-.sideNav button:nth-of-type(5)::before{content:"💬"}
-.sideNav button:nth-of-type(6)::before{content:"🔎"}
-.sideNav button:nth-of-type(7)::before{content:"🗺️"}
-.sideNav button:nth-of-type(8)::before{content:"✈️"}
-.sideNav button:nth-of-type(9)::before{content:"💎"}
-.sideNav button:nth-of-type(10)::before{content:"📦"}
-.sideNav button:nth-of-type(11)::before{content:"📞"}
-.sideNav button:nth-of-type(12)::before{content:"🧾"}
-.sideNav button:nth-of-type(13)::before{content:"🧩"}
-.sideNav button:nth-of-type(14)::before{content:"🕘"}
-.sideNav button:nth-of-type(15)::before{content:"🔗"}
-.sideNav button:nth-of-type(16)::before{content:"📄"}
-.sideNav button:nth-of-type(17)::before{content:"⚙️"}
-.sideNav button:nth-of-type(18)::before{content:"✨"}
-.sideNav button:nth-of-type(19)::before{content:"👤"}
+/* Galaxy: application chrome and cards are strictly black + warm yellow. */
+html[data-future-theme="galaxy"] body,html[data-future-theme="galaxy"] .futureAppShell,html[data-future-theme="galaxy"] .futureMain,html[data-future-theme="galaxy"] .futureSidebar,html[data-future-theme="galaxy"] .sideNav,html[data-future-theme="galaxy"] .sideFooter,html[data-future-theme="galaxy"] .mobileMenuExtras,html[data-future-theme="galaxy"] .futureTopbar,html[data-future-theme="galaxy"] .dashboardCard,html[data-future-theme="galaxy"] .v32Card,html[data-future-theme="galaxy"] .workflowPanel,html[data-future-theme="galaxy"] .workflowCard,html[data-future-theme="galaxy"] .workflowStep,html[data-future-theme="galaxy"] .workflowEmpty,html[data-future-theme="galaxy"] .approvalCenter,html[data-future-theme="galaxy"] .approvalItem,html[data-future-theme="galaxy"] .approvalEmpty,html[data-future-theme="galaxy"] .safetyRule,html[data-future-theme="galaxy"] .emailPreview,html[data-future-theme="galaxy"] .emailInbox,html[data-future-theme="galaxy"] .emailList,html[data-future-theme="galaxy"] .emailRow,html[data-future-theme="galaxy"] .emailRow>div,html[data-future-theme="galaxy"] .emailAccountPicker,html[data-future-theme="galaxy"] .emailProviderSwitch,html[data-future-theme="galaxy"] .emptyMini,html[data-future-theme="galaxy"] .notesPanel,html[data-future-theme="galaxy"] .notesEmpty,html[data-future-theme="galaxy"] .noteRow,html[data-future-theme="galaxy"] .schedulePanel,html[data-future-theme="galaxy"] .scheduleEmpty,html[data-future-theme="galaxy"] .travelSearch,html[data-future-theme="galaxy"] .flightRow,html[data-future-theme="galaxy"] .accountingPanel,html[data-future-theme="galaxy"] .accountingSummary,html[data-future-theme="galaxy"] .accountingCard,html[data-future-theme="galaxy"] .accountingRow,html[data-future-theme="galaxy"] .connectionRow,html[data-future-theme="galaxy"] .contactsHub,html[data-future-theme="galaxy"] .connectionList,html[data-future-theme="galaxy"] .searchResult,html[data-future-theme="galaxy"] .searchResultCard,html[data-future-theme="galaxy"] .placeCard,html[data-future-theme="galaxy"] .v33PanelPage,html[data-future-theme="galaxy"] .sourceBadge,html[data-future-theme="galaxy"] .waitingBadge,html[data-future-theme="galaxy"] .readyBadge,html[data-future-theme="galaxy"] .workflowCount,html[data-future-theme="galaxy"] .approvalCount,html[data-future-theme="galaxy"] .languagePill,html[data-future-theme="galaxy"] .voiceMode,html[data-future-theme="galaxy"] .compatHint,html[data-future-theme="galaxy"] .statusLine{background:#000!important;background-image:none!important;color:#ffe36a!important;border-color:#ffe36a!important;box-shadow:none!important}
 
-.mobileBottomNav button { font-size:0 !important; }
-.mobileBottomNav button::before { display:block; font-size:19px; line-height:1; margin-bottom:5px; }
-.mobileBottomNav button span { font-size:10px !important; }
-.mobileBottomNav button:nth-child(1)::before{content:"🏠"}
-.mobileBottomNav button:nth-child(2)::before{content:"✅"}
-.mobileBottomNav button:nth-child(3)::before{content:"🔎"}
-.mobileBottomNav button:nth-child(4)::before{content:"📅"}
-.mobileBottomNav button:nth-child(5)::before{content:"☰"}
+/* Galaxy workspace/modal: catch the actual modal structure, including the white header seen in Tasks. */
+html[data-future-theme="galaxy"] [role="dialog"],html[data-future-theme="galaxy"] [role="dialog"]>*,html[data-future-theme="galaxy"] [class*="Modal"],html[data-future-theme="galaxy"] [class*="modal"],html[data-future-theme="galaxy"] [class*="Workspace"],html[data-future-theme="galaxy"] [class*="workspace"]{background-color:#000!important;background-image:none!important;color:#ffe36a!important;border-color:#ffe36a!important}
+html[data-future-theme="galaxy"] [role="dialog"] header,html[data-future-theme="galaxy"] [role="dialog"] section,html[data-future-theme="galaxy"] [role="dialog"] article,html[data-future-theme="galaxy"] [role="dialog"] main,html[data-future-theme="galaxy"] [class*="Modal"] header,html[data-future-theme="galaxy"] [class*="modal"] header{background:#000!important;background-image:none!important;color:#ffe36a!important;border-color:#ffe36a!important}
 
-/* Galaxy means black + warm yellow: remove gray/white application surfaces. */
-html[data-future-theme="galaxy"] body,
-html[data-future-theme="galaxy"] .futureAppShell,
-html[data-future-theme="galaxy"] .futureMain,
-html[data-future-theme="galaxy"] .workflowPanel,
-html[data-future-theme="galaxy"] .workflowCard,
-html[data-future-theme="galaxy"] .workflowStep,
-html[data-future-theme="galaxy"] .workflowEmpty,
-html[data-future-theme="galaxy"] .approvalCenter,
-html[data-future-theme="galaxy"] .approvalItem,
-html[data-future-theme="galaxy"] .approvalEmpty,
-html[data-future-theme="galaxy"] .safetyRule,
-html[data-future-theme="galaxy"] .emailPreview,
-html[data-future-theme="galaxy"] .dashboardCard,
-html[data-future-theme="galaxy"] .v32Card,
-html[data-future-theme="galaxy"] .v32SummaryRow > button,
-html[data-future-theme="galaxy"] .notesPanel,
-html[data-future-theme="galaxy"] .notesEmpty,
-html[data-future-theme="galaxy"] .noteRow,
-html[data-future-theme="galaxy"] .schedulePanel,
-html[data-future-theme="galaxy"] .scheduleEmpty,
-html[data-future-theme="galaxy"] .sourceBadge,
-html[data-future-theme="galaxy"] .waitingBadge,
-html[data-future-theme="galaxy"] .readyBadge,
-html[data-future-theme="galaxy"] .workflowCount,
-html[data-future-theme="galaxy"] .approvalCount,
-html[data-future-theme="galaxy"] .languagePill,
-html[data-future-theme="galaxy"] .voiceMode,
-html[data-future-theme="galaxy"] .compatHint,
-html[data-future-theme="galaxy"] .statusLine {
-  background:#000 !important;
-  background-image:none !important;
-  color:#ffe36a !important;
-  border-color:rgba(255,227,106,.38) !important;
-  box-shadow:none !important;
-}
-html[data-future-theme="galaxy"] .workflowPanel *,
-html[data-future-theme="galaxy"] .approvalCenter *,
-html[data-future-theme="galaxy"] .dashboardCard * { color:#ffe36a; }
-html[data-future-theme="galaxy"] .workflowCard input,
-html[data-future-theme="galaxy"] .workflowCard textarea,
-html[data-future-theme="galaxy"] .emailPreview,
-html[data-future-theme="galaxy"] .emailPreview p,
-html[data-future-theme="galaxy"] .notesPanel input,
-html[data-future-theme="galaxy"] .notesPanel textarea {
-  background:#000 !important;
-  color:#ffe36a !important;
-  border-color:rgba(255,227,106,.38) !important;
-}
-html[data-future-theme="galaxy"] .workflowManageRow button,
-html[data-future-theme="galaxy"] .miniAction,
-html[data-future-theme="galaxy"] .approvalButtons button,
-html[data-future-theme="galaxy"] .ghost {
-  background:#000 !important;
-  color:#ffe36a !important;
-  border:1px solid rgba(255,227,106,.42) !important;
-}
-html[data-future-theme="galaxy"] .approveButton,
-html[data-future-theme="galaxy"] .primary {
-  background:#ffe36a !important;
-  color:#000 !important;
-  border-color:#ffe36a !important;
-}
-html[data-future-theme="galaxy"] .approveButton *,
-html[data-future-theme="galaxy"] .primary * { color:#000 !important; }
-
-/* Galaxy drawer/sidebar is pure black, no gray fallback. */
-html[data-future-theme="galaxy"] .futureSidebar,
-html[data-future-theme="galaxy"] .sideNav,
-html[data-future-theme="galaxy"] .sideFooter,
-html[data-future-theme="galaxy"] .mobileMenuExtras,
-html[data-future-theme="galaxy"] .futureTopbar {
-  background:#000 !important;
-  background-image:none !important;
-  color:#ffe36a !important;
-}
-
-/* Galaxy hard override: no gray or white cards/fields anywhere in app surfaces. */
-html[data-future-theme="galaxy"] .emailInbox,
-html[data-future-theme="galaxy"] .emailList,
-html[data-future-theme="galaxy"] .emailRow,
-html[data-future-theme="galaxy"] .emailRow > div,
-html[data-future-theme="galaxy"] .emailAccountPicker,
-html[data-future-theme="galaxy"] .emailProviderSwitch,
-html[data-future-theme="galaxy"] .emailProviderButton,
-html[data-future-theme="galaxy"] .emptyMini,
-html[data-future-theme="galaxy"] .travelSearch,
-html[data-future-theme="galaxy"] .flightRow,
-html[data-future-theme="galaxy"] .accountingPanel,
-html[data-future-theme="galaxy"] .accountingSummary,
-html[data-future-theme="galaxy"] .accountingCard,
-html[data-future-theme="galaxy"] .accountingRow,
-html[data-future-theme="galaxy"] .connectionRow,
-html[data-future-theme="galaxy"] .contactsHub,
-html[data-future-theme="galaxy"] .connectionList,
-html[data-future-theme="galaxy"] .searchResult,
-html[data-future-theme="galaxy"] .searchResultCard,
-html[data-future-theme="galaxy"] .placeCard,
-html[data-future-theme="galaxy"] .workspaceModal,
-html[data-future-theme="galaxy"] .workspaceModalContent,
-html[data-future-theme="galaxy"] .v33PanelPage {
-  background:#000 !important;
-  background-image:none !important;
-  color:#ffe36a !important;
-  border-color:rgba(255,227,106,.42) !important;
-  box-shadow:none !important;
-}
-
-html[data-future-theme="galaxy"] input,
-html[data-future-theme="galaxy"] textarea,
-html[data-future-theme="galaxy"] select,
-html[data-future-theme="galaxy"] option,
-html[data-future-theme="galaxy"] .softButton,
-html[data-future-theme="galaxy"] .connectButton,
-html[data-future-theme="galaxy"] .miniDisconnect,
-html[data-future-theme="galaxy"] .emailProviderButton {
-  background:#000 !important;
-  background-image:none !important;
-  color:#ffe36a !important;
-  border-color:rgba(255,227,106,.48) !important;
-  box-shadow:none !important;
-}
-
-html[data-future-theme="galaxy"] .emailProviderButton.active,
-html[data-future-theme="galaxy"] .softButton:hover,
-html[data-future-theme="galaxy"] .connectButton:hover {
-  background:#ffe36a !important;
-  color:#000 !important;
-  border-color:#ffe36a !important;
-}
-html[data-future-theme="galaxy"] .emailProviderButton.active *,
-html[data-future-theme="galaxy"] .softButton:hover *,
-html[data-future-theme="galaxy"] .connectButton:hover * { color:#000 !important; }
-
-html[data-future-theme="galaxy"] .emailRow *,
-html[data-future-theme="galaxy"] .flightRow *,
-html[data-future-theme="galaxy"] .connectionRow *,
-html[data-future-theme="galaxy"] .accountingPanel *,
-html[data-future-theme="galaxy"] .accountingCard * {
-  color:#ffe36a !important;
-}
-
-/* Keep floating Future orb above bottom navigation without covering content. */
-@media(max-width:900px){
-  .futureChatLauncher{right:16px !important;bottom:96px !important;}
-  .futureMain{padding-bottom:128px !important;}
-}
+html[data-future-theme="galaxy"] input,html[data-future-theme="galaxy"] textarea,html[data-future-theme="galaxy"] select,html[data-future-theme="galaxy"] option,html[data-future-theme="galaxy"] .softButton,html[data-future-theme="galaxy"] .connectButton,html[data-future-theme="galaxy"] .miniDisconnect,html[data-future-theme="galaxy"] .emailProviderButton,html[data-future-theme="galaxy"] .workflowManageRow button,html[data-future-theme="galaxy"] .miniAction,html[data-future-theme="galaxy"] .approvalButtons button,html[data-future-theme="galaxy"] .ghost{background:#000!important;background-image:none!important;color:#ffe36a!important;border:1px solid #ffe36a!important;box-shadow:none!important}
+html[data-future-theme="galaxy"] .emailProviderButton.active,html[data-future-theme="galaxy"] .softButton:hover,html[data-future-theme="galaxy"] .connectButton:hover,html[data-future-theme="galaxy"] .approveButton,html[data-future-theme="galaxy"] .primary{background:#ffe36a!important;color:#000!important;border-color:#ffe36a!important}
+html[data-future-theme="galaxy"] .emailProviderButton.active *,html[data-future-theme="galaxy"] .softButton:hover *,html[data-future-theme="galaxy"] .connectButton:hover *,html[data-future-theme="galaxy"] .approveButton *,html[data-future-theme="galaxy"] .primary *{color:#000!important}
+html[data-future-theme="galaxy"] .workflowPanel *,html[data-future-theme="galaxy"] .approvalCenter *,html[data-future-theme="galaxy"] .dashboardCard *,html[data-future-theme="galaxy"] .emailRow *,html[data-future-theme="galaxy"] .flightRow *,html[data-future-theme="galaxy"] .connectionRow *,html[data-future-theme="galaxy"] .accountingPanel *,html[data-future-theme="galaxy"] .accountingCard *,html[data-future-theme="galaxy"] [role="dialog"] *{color:#ffe36a}
