@@ -11,7 +11,7 @@ import WorkflowPanel from "@/components/WorkflowPanel";
 import CalendarMonthView from "@/components/CalendarMonthView";
 import SchedulePanel from "@/components/SchedulePanel";
 import NotesPanel from "@/components/NotesPanel";
-import SearchDiscover from "@/components/SearchDiscover";
+import SearchDiscover, { type SearchPlace } from "@/components/SearchDiscover";
 import PlaceMap from "@/components/PlaceMap";
 import CustomizeLayoutPanel from "@/components/CustomizeLayoutPanel";
 import ApprovalCenter from "@/components/ApprovalCenter";
@@ -66,6 +66,8 @@ export default function Home() {
   const [selectedCalendarDate, setSelectedCalendarDate] = useState(() => new Date());
   const [orders, setOrders] = useState<FutureOrder[]>([]);
   const [activeWorkspace, setActiveWorkspace] = useState<null | "tasks" | "calendar" | "email" | "whatsapp" | "search" | "map" | "travel" | "shopping" | "orders" | "contacts" | "accounting" | "workflow" | "history" | "connections" | "approval" | "settings" | "customize">(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedMapPlace, setSelectedMapPlace] = useState<SearchPlace | null>(null);
   const [accountMode, setAccountMode] = useState<{signedIn:boolean;plan:string}>({signedIn:false,plan:"guest"});
   const t = copy[locale];
 
@@ -425,13 +427,13 @@ export default function Home() {
     <SaaSGate>
       <CloudSync />
       <main className="futureAppShell">
-      <aside className="futureSidebar">
+      <aside className={`futureSidebar ${mobileMenuOpen ? "mobileOpen" : ""}`}>
         <div className="sideBrand"><EclipseBrand /></div>
         <div className="sideNavTabs" aria-label="Sidebar navigation shortcuts">
           <button onClick={()=>document.querySelector<HTMLElement>(".sideNav")?.scrollTo({top:0,behavior:"smooth"})}>Main</button>
           <button onClick={()=>document.querySelector<HTMLElement>(".sideNav")?.scrollTo({top:700,behavior:"smooth"})}>More</button>
         </div>
-        <nav className="sideNav">
+        <nav className="sideNav" onClick={()=>setMobileMenuOpen(false)}>
           <button className="active" onClick={()=>setActiveWorkspace(null)}>⌂ <span>Home</span></button>
           <button onClick={()=>setActiveWorkspace("tasks")}>☑ <span>Tasks</span></button>
           <button onClick={()=>setActiveWorkspace("calendar")}>▦ <span>Calendar</span></button>
@@ -453,13 +455,18 @@ export default function Home() {
           <button onClick={()=>setActiveWorkspace("customize")}>✦ <span>Customize Layout</span>{accountMode.plan!=="guest"&&accountMode.plan!=="free"&&<b className="navNew">PRO</b>}</button>
           <button onClick={()=>{location.href=accountMode.signedIn?"/account":"/login"}}>◌ <span>{accountMode.signedIn?"Account & Usage":"Sign in (optional)"}</span></button>
         </nav>
+        <div className="mobileMenuExtras">
+          <div className="localeSwitch">{([['fr','FR'],['en','EN'],['th','TH']] as [Locale,string][]).map(([key,label]) => <button key={key} className={locale===key?'active':''} onClick={()=>changeLocale(key)}>{label}</button>)}</div>
+          <a href={accountMode.signedIn?"/account":"/login"}>{accountMode.signedIn?"Account & Usage":"Guest · Sign in"}</a>
+        </div>
         <div className="sideFooter">
-          <span>Future 4.6</span><small>Launch Candidate</small>
+          <span>Future 4.7</span><small>Responsive Search & Maps</small>
         </div>
       </aside>
 
       <div className="futureMain">
         <header className="futureTopbar">
+          <button className="mobileMenuButton" aria-label="Open menu" onClick={()=>setMobileMenuOpen(true)}>☰</button>
           <div className="topLinks"><a href="#home" className="active">Home</a><a href="#features">Features</a><a href="#workflow">How it works</a><a href="#approval">Privacy</a></div>
           <div className="topActions">
             <div className="localeSwitch">{([['fr','FR'],['en','EN'],['th','TH']] as [Locale,string][]).map(([key,label]) => <button key={key} className={locale===key?'active':''} onClick={()=>changeLocale(key)}>{label}</button>)}</div>
@@ -501,7 +508,7 @@ export default function Home() {
         </section>
 
         <section className="v42DiscoverSplit" id="discover">
-          <SearchDiscover locale={locale} />
+          <SearchDiscover locale={locale} onOpenPlace={(place)=>{setSelectedMapPlace(place);setActiveWorkspace("map")}} />
           <EmailInboxCard locale={locale} messages={emailMessages} loading={emailLoading} connected={emailConnection.connected} onCheck={()=>checkInbox(locale)} />
         </section>
 
@@ -528,6 +535,14 @@ export default function Home() {
         {duplicate && <section className="duplicateCard"><div><span className="eyebrow">POSSIBLE DUPLICATE</span><strong>{duplicate.existing.title}</strong><span>{duplicate.incoming.title}</span></div><div className="actions"><button className="ghost" onClick={()=>{setDuplicate(null);setStatus(t.keep)}}>{t.keep}</button><button className="ghost" onClick={()=>{persist([...items,duplicate.incoming]);setDuplicate(null);setStatus(t.both)}}>{t.both}</button><button className="ghost" onClick={()=>{persist(items.map((item)=>item.id===duplicate.existing.id?{...duplicate.incoming,id:item.id,createdAt:item.createdAt}:item));setDuplicate(null);setStatus(t.merge)}}>{t.merge}</button></div></section>}
 
         <MapLauncher locale={locale} onOpen={()=>setActiveWorkspace("map")} />
+        <nav className="mobileBottomNav" aria-label="Mobile navigation">
+          <button onClick={()=>{setActiveWorkspace(null);setMobileMenuOpen(false);window.scrollTo({top:0,behavior:"smooth"})}}>⌂<span>Home</span></button>
+          <button onClick={()=>setActiveWorkspace("tasks")}>☑<span>Tasks</span></button>
+          <button onClick={()=>setActiveWorkspace("search")}>⌕<span>Search</span></button>
+          <button onClick={()=>setActiveWorkspace("calendar")}>▦<span>Calendar</span></button>
+          <button onClick={()=>setMobileMenuOpen(true)}>☰<span>More</span></button>
+        </nav>
+        {mobileMenuOpen && <button className="mobileMenuBackdrop" aria-label="Close menu" onClick={()=>setMobileMenuOpen(false)} />}
         <MiniChat messages={messages} locale={locale} status={status} onSubmit={handleCommand} />
 
         {activeWorkspace && <WorkspaceModal title={{tasks:"Tasks",calendar:"Calendar",email:"Email",whatsapp:"WhatsApp",search:"Search & Discover",map:"Map & Places",travel:"Travel & Booking",shopping:"Shopping",orders:"Orders & Deliveries",contacts:"Calls & Contacts",accounting:"Accounting",workflow:"Workflows",history:"History",connections:"Connections",approval:"Approval Center",settings:"Settings",customize:"Customize Layout"}[activeWorkspace]} subtitle="A focused workspace with more room to read and work." onClose={()=>setActiveWorkspace(null)}>
@@ -535,8 +550,8 @@ export default function Home() {
           {activeWorkspace === "calendar" && <CalendarMonthView items={items} locale={locale} selectedDate={selectedCalendarDate} onSelectDate={setSelectedCalendarDate} onAdd={addCalendarItem} onUpdate={updateCalendarItem} onDelete={deleteItem} />}
           {activeWorkspace === "email" && <EmailInboxCard locale={locale} messages={emailMessages} loading={emailLoading} connected={emailConnection.connected} onCheck={()=>checkInbox(locale)} />}
           {activeWorkspace === "whatsapp" && <WhatsAppPanel />}
-          {activeWorkspace === "search" && <SearchDiscover locale={locale} />}
-          {activeWorkspace === "map" && <PlaceMap locale={locale} />}
+          {activeWorkspace === "search" && <SearchDiscover locale={locale} onOpenPlace={(place)=>{setSelectedMapPlace(place);setActiveWorkspace("map")}} />}
+          {activeWorkspace === "map" && <PlaceMap locale={locale} initialPlace={selectedMapPlace} />}
           {activeWorkspace === "travel" && <div className="dashboardCard"><div className="panelHeading"><div><span className="eyebrow">TRAVEL & BOOKING</span><h3>Your saved trips & bookings</h3></div></div>{items.filter(i=>/flight|hotel|บิน|โรงแรม|trip|travel/i.test(i.title)).map(i=><div className="flightRow" key={i.id}><div><strong>{i.title}</strong><span>{new Date(i.startsAt ?? i.dueAt ?? i.remindAt ?? Date.now()).toLocaleString()}</span></div></div>)}</div>}
           {activeWorkspace === "shopping" && <div className="v33PanelPage"><div className="v33PageIntro"><div><span>SHOPPING</span><h3>Research, compare, then approve</h3><p>Future can research products and prepare a purchase. Payment remains behind Approval Center.</p></div></div><SearchDiscover locale={locale}/></div>}
           {activeWorkspace === "orders" && <OrdersPanel orders={orders} tasks={items} onChange={persistOrders} onOpenTask={()=>setActiveWorkspace("tasks")} />}
