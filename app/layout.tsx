@@ -3,6 +3,7 @@ import "./globals.css";
 import "./galaxy-theme.css";
 import "./galaxy-mobile-fixes.css";
 import "./mobile-layout.css";
+import "./chat-popup.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hey-future.vercel.app"),
