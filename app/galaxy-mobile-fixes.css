@@ -1,0 +1,154 @@
+/* Future 4.8 mobile polish — Galaxy is black + warm yellow only. */
+html[data-future-theme="galaxy"]{
+  --future-yellow:#ffe36a;
+  --future-yellow-strong:#ffd84d;
+  --future-black:#000;
+  --future-border:rgba(255,227,106,.42);
+}
+
+/* Remove light/gray surfaces that make yellow text hard to read. */
+html[data-future-theme="galaxy"] .contactsHub,
+html[data-future-theme="galaxy"] .contactRow,
+html[data-future-theme="galaxy"] .contactForm,
+html[data-future-theme="galaxy"] .contactEmpty,
+html[data-future-theme="galaxy"] .notificationPanel,
+html[data-future-theme="galaxy"] .installPanel,
+html[data-future-theme="galaxy"] .installSteps,
+html[data-future-theme="galaxy"] .compatHint,
+html[data-future-theme="galaxy"] .phaseBadge,
+html[data-future-theme="galaxy"] .privacyLine,
+html[data-future-theme="galaxy"] .connectionsPanel,
+html[data-future-theme="galaxy"] .connectionRow,
+html[data-future-theme="galaxy"] .connectionCard,
+html[data-future-theme="galaxy"] .v33MiniChat,
+html[data-future-theme="galaxy"] .v44MiniMap{
+  background:#000!important;
+  background-image:none!important;
+  color:var(--future-yellow)!important;
+  border-color:var(--future-border)!important;
+  box-shadow:none!important;
+}
+
+/* Text stays readable: yellow on black, never yellow on gray. */
+html[data-future-theme="galaxy"] .contactsHub *,
+html[data-future-theme="galaxy"] .notificationPanel *,
+html[data-future-theme="galaxy"] .installPanel *,
+html[data-future-theme="galaxy"] .connectionsPanel *,
+html[data-future-theme="galaxy"] .v33MiniChat *,
+html[data-future-theme="galaxy"] .v44MiniMap *{
+  color:var(--future-yellow)!important;
+}
+
+html[data-future-theme="galaxy"] .contactsHub,
+html[data-future-theme="galaxy"] .connectionsPanel,
+html[data-future-theme="galaxy"] .notificationPanel,
+html[data-future-theme="galaxy"] .installPanel{
+  border:1px solid var(--future-border)!important;
+}
+
+html[data-future-theme="galaxy"] .contactRow,
+html[data-future-theme="galaxy"] .connectionRow{
+  border-color:rgba(255,227,106,.28)!important;
+}
+
+/* Primary actions: yellow background with black text for maximum contrast. */
+html[data-future-theme="galaxy"] .contactPrimary,
+html[data-future-theme="galaxy"] .contactsHub .phaseBadge,
+html[data-future-theme="galaxy"] .connectionsPanel .primaryBtn,
+html[data-future-theme="galaxy"] .connectionsPanel .connectionAction,
+html[data-future-theme="galaxy"] .v33MiniChat>b,
+html[data-future-theme="galaxy"] .v44MiniMap>b{
+  background:var(--future-yellow)!important;
+  color:#000!important;
+  border-color:var(--future-yellow)!important;
+}
+html[data-future-theme="galaxy"] .contactPrimary *,
+html[data-future-theme="galaxy"] .contactsHub .phaseBadge *,
+html[data-future-theme="galaxy"] .connectionsPanel .primaryBtn *,
+html[data-future-theme="galaxy"] .connectionsPanel .connectionAction *,
+html[data-future-theme="galaxy"] .v33MiniChat>b,
+html[data-future-theme="galaxy"] .v44MiniMap>b{
+  color:#000!important;
+}
+
+/* Secondary controls stay black with yellow outlines. */
+html[data-future-theme="galaxy"] .contactsHub .ghost,
+html[data-future-theme="galaxy"] .contactQuick a,
+html[data-future-theme="galaxy"] .contactQuick button,
+html[data-future-theme="galaxy"] .connectionsPanel button:not(.primaryBtn):not(.connectionAction),
+html[data-future-theme="galaxy"] .installPanel .ghost{
+  background:#000!important;
+  color:var(--future-yellow)!important;
+  border:1px solid var(--future-border)!important;
+}
+
+html[data-future-theme="galaxy"] .contactAvatar{
+  background:var(--future-yellow)!important;
+  color:#000!important;
+  border-color:var(--future-yellow)!important;
+}
+html[data-future-theme="galaxy"] .contactAvatar *{color:#000!important}
+html[data-future-theme="galaxy"] .contactInfo span,
+html[data-future-theme="galaxy"] .privacyLine,
+html[data-future-theme="galaxy"] .privacyLine span,
+html[data-future-theme="galaxy"] .notificationMessage,
+html[data-future-theme="galaxy"] .notificationNote,
+html[data-future-theme="galaxy"] .installPanel p,
+html[data-future-theme="galaxy"] .installSteps{
+  color:var(--future-yellow)!important;
+  opacity:.92!important;
+}
+
+/* Inputs/forms never fall back to white or gray. */
+html[data-future-theme="galaxy"] .contactsHub input,
+html[data-future-theme="galaxy"] .contactsHub textarea,
+html[data-future-theme="galaxy"] .contactsHub select{
+  background:#000!important;
+  color:var(--future-yellow)!important;
+  border-color:var(--future-border)!important;
+}
+html[data-future-theme="galaxy"] .contactsHub input::placeholder,
+html[data-future-theme="galaxy"] .contactsHub textarea::placeholder{
+  color:rgba(255,227,106,.65)!important;
+}
+
+@media(max-width:900px){
+  /* Give floating cards their own vertical slots. Ask Future is deliberately higher. */
+  html[data-future-theme="galaxy"] .v44MiniMap{
+    position:fixed!important;
+    right:14px!important;
+    bottom:126px!important;
+    width:min(350px,calc(100vw - 44px))!important;
+    min-height:82px!important;
+    z-index:61!important;
+    margin:0!important;
+  }
+  html[data-future-theme="galaxy"] .v33MiniChat{
+    position:fixed!important;
+    right:14px!important;
+    bottom:226px!important;
+    width:min(350px,calc(100vw - 44px))!important;
+    min-height:92px!important;
+    z-index:62!important;
+    margin:0!important;
+  }
+  html[data-future-theme="galaxy"] .v33MiniChat,
+  html[data-future-theme="galaxy"] .v44MiniMap{
+    border:1px solid var(--future-border)!important;
+    border-radius:22px!important;
+  }
+
+  /* Keep content clear of the two floating cards and bottom navigation. */
+  html[data-future-theme="galaxy"] .futureMain,
+  html[data-future-theme="galaxy"] main{
+    padding-bottom:330px!important;
+  }
+
+  html[data-future-theme="galaxy"] .mobileBottomNav,
+  html[data-future-theme="galaxy"] .bottomNav,
+  html[data-future-theme="galaxy"] .v47MobileNav{
+    background:#000!important;
+    border:1px solid var(--future-border)!important;
+    color:var(--future-yellow)!important;
+  }
+}
