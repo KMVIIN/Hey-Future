@@ -1,5 +1,5 @@
--- Future 4.0 SaaS launch schema
--- Run this in Supabase SQL Editor once.
+-- Future 5.0 SaaS launch schema
+-- Run this in Supabase SQL Editor once. Safe to re-run.
 create extension if not exists "pgcrypto";
 
 create table if not exists public.profiles (
@@ -41,6 +41,19 @@ create table if not exists public.user_state (
   updated_at timestamptz not null default now()
 );
 
+-- Web Push subscriptions are server-managed. user_id may be null for guest/public-beta devices.
+create table if not exists public.push_subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete cascade,
+  endpoint text not null unique,
+  p256dh text not null,
+  auth text not null,
+  user_agent text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index if not exists push_subscriptions_user_idx on public.push_subscriptions(user_id);
+
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public as $$
 begin
@@ -62,6 +75,7 @@ alter table public.profiles enable row level security;
 alter table public.subscriptions enable row level security;
 alter table public.usage_events enable row level security;
 alter table public.user_state enable row level security;
+alter table public.push_subscriptions enable row level security;
 
 drop policy if exists "profile self read" on public.profiles;
 create policy "profile self read" on public.profiles for select using (auth.uid() = id);
@@ -80,3 +94,5 @@ drop policy if exists "state self insert" on public.user_state;
 create policy "state self insert" on public.user_state for insert with check (auth.uid() = user_id);
 drop policy if exists "state self update" on public.user_state;
 create policy "state self update" on public.user_state for update using (auth.uid() = user_id);
+
+-- No browser policy for push_subscriptions: API routes use the service-role key.
