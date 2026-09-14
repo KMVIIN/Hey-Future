@@ -7,7 +7,7 @@ export async function GET() {
   try {
     return NextResponse.json({ configured: true, publicKey: vapidConfig().publicKey });
   } catch {
-    return NextResponse.json({ configured: false, publicKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "" });
+    return NextResponse.json({ configured: false, publicKey: process.env.VAPID_KEY || "" });
   }
 }
 
