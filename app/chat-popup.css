@@ -1,0 +1,39 @@
+/* Future 4.8 — one universal popup-chat interaction for Galaxy, Lavender and Sky. */
+.futureChatLauncher{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:max(92px,calc(env(safe-area-inset-bottom) + 78px));z-index:70;width:76px;height:88px;border:0!important;background:transparent!important;box-shadow:none!important;padding:0!important;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}.futureChatSun{display:block;width:58px;height:58px;border-radius:50%;background:radial-gradient(circle,#171824 0 42%,transparent 43%),radial-gradient(circle at 50% 50%,#fff 0 46%,#9b83ff 54%,#527cf6 65%,rgba(216,233,255,.7) 72%,transparent 75%);box-shadow:0 0 24px rgba(125,126,255,.34)}.futureChatSunSmall{width:38px;height:38px}.futureChatLauncherLabel{font-size:11px;font-weight:800;line-height:1}.futureChatPopup{display:flex;flex-direction:column}.futureChatClose{font-size:28px;line-height:1}
+
+/* Galaxy: every chat surface is black + warm yellow, never gray/white. */
+html[data-future-theme="galaxy"] .futureChatLauncherLabel{color:#ffe36a!important}
+html[data-future-theme="galaxy"] .futureChatSun{background:radial-gradient(circle,#000 0 43%,#ffe36a 50%,#ffd84d 58%,rgba(255,227,106,.18) 68%,transparent 73%)!important;box-shadow:0 0 26px rgba(255,227,106,.48)!important}
+html[data-future-theme="galaxy"] .v33ChatModal,
+html[data-future-theme="galaxy"] .v33ChatModal header,
+html[data-future-theme="galaxy"] .v33ChatMessages,
+html[data-future-theme="galaxy"] .v33ChatInput,
+html[data-future-theme="galaxy"] .conversationPanel,
+html[data-future-theme="galaxy"] .conversationFeed,
+html[data-future-theme="galaxy"] .assistantIdentity,
+html[data-future-theme="galaxy"] .message.assistant .messageBubble,
+html[data-future-theme="galaxy"] .assistantBubble,
+html[data-future-theme="galaxy"] .commandComposer{background:#000!important;background-image:none!important;color:#ffe36a!important;border-color:rgba(255,227,106,.38)!important;box-shadow:none!important}
+html[data-future-theme="galaxy"] .v33ChatModal *{border-color:rgba(255,227,106,.30)}
+html[data-future-theme="galaxy"] .assistantIdentity strong,
+html[data-future-theme="galaxy"] .assistantIdentity span,
+html[data-future-theme="galaxy"] .messageLabel,
+html[data-future-theme="galaxy"] .message.assistant .messageBubble,
+html[data-future-theme="galaxy"] .assistantBubble,
+html[data-future-theme="galaxy"] .composerLabel,
+html[data-future-theme="galaxy"] .composerTip,
+html[data-future-theme="galaxy"] .statusLine{color:#ffe36a!important}
+html[data-future-theme="galaxy"] .message.user .messageBubble{background:#ffe36a!important;color:#000!important;border:1px solid #ffe36a!important}
+html[data-future-theme="galaxy"] .v33ChatInput textarea,
+html[data-future-theme="galaxy"] .v33ChatInput input,
+html[data-future-theme="galaxy"] .commandInput{background:#000!important;color:#ffe36a!important;border-color:rgba(255,227,106,.42)!important}
+html[data-future-theme="galaxy"] .v33ChatInput textarea::placeholder,
+html[data-future-theme="galaxy"] .v33ChatInput input::placeholder,
+html[data-future-theme="galaxy"] .commandInput::placeholder{color:rgba(255,227,106,.62)!important}
+html[data-future-theme="galaxy"] .v33ChatInput .primary{background:#ffe36a!important;color:#000!important}
+html[data-future-theme="galaxy"] .v33ChatInput .voice{background:#000!important;color:#ffe36a!important;border:1px solid rgba(255,227,106,.42)!important}
+html[data-future-theme="galaxy"] .v33ChatInput .languagePill,
+html[data-future-theme="galaxy"] .v33ChatInput .voiceMode{background:#000!important;color:#ffe36a!important;border-color:rgba(255,227,106,.38)!important}
+
+@media(min-width:901px){.futureChatLauncher{right:22px;bottom:22px}.v33ChatBackdrop{align-items:flex-end!important;justify-content:flex-end!important;padding:20px!important}.futureChatPopup{width:min(430px,calc(100vw - 40px))!important;height:min(720px,calc(100vh - 40px))!important;max-height:calc(100vh - 40px)!important;border-radius:26px!important}}
+@media(max-width:900px){.futureChatLauncher{right:max(16px,env(safe-area-inset-right));bottom:max(96px,calc(env(safe-area-inset-bottom) + 82px));width:68px;height:78px}.futureChatSun{width:54px;height:54px}.futureChatLauncherLabel{font-size:10px}.futureChatPopup{width:calc(100vw - 24px)!important;height:min(78dvh,720px)!important;max-height:calc(100dvh - 110px)!important;margin:auto 12px max(92px,calc(env(safe-area-inset-bottom) + 78px))!important;border-radius:24px!important;overflow:hidden!important}.v33ChatBackdrop{align-items:flex-end!important;justify-content:center!important;padding:0!important}.v33ChatMessages{flex:1 1 auto!important;min-height:0!important;overflow:auto!important}.v33ChatInput{flex:0 0 auto!important}}
