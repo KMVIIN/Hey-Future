@@ -11,7 +11,23 @@ export async function GET() {
   const legacy=openEmailSession(store.get(EMAIL_COOKIE)?.value);
   const activeName=store.get(EMAIL_ACTIVE_PROVIDER_COOKIE)?.value;
   const active=(activeName==="google"?google:activeName==="microsoft"?microsoft:null)||legacy||google||microsoft;
-  const accounts=[microsoft,google].filter(Boolean).map((s)=>({provider:s!.provider,email:s!.email,name:s!.name}));
-  if(!accounts.length&&legacy) accounts.push({provider:legacy.provider,email:legacy.email,name:legacy.name});
-  return NextResponse.json({configured:microsoftConfigured||googleConfigured,microsoftConfigured,googleConfigured,connected:Boolean(active),provider:active?.provider,email:active?.email,name:active?.name,accounts,microsoftConnected:Boolean(microsoft||(legacy?.provider==="microsoft")),googleConnected:Boolean(google||(legacy?.provider==="google"))});
+  const accountMap=new Map<string,{provider:"microsoft"|"google";email?:string;name?:string}>();
+  for(const session of [microsoft,google,legacy]){
+    if(!session) continue;
+    const key=`${session.provider}:${session.email||""}`;
+    if(!accountMap.has(key)) accountMap.set(key,{provider:session.provider,email:session.email,name:session.name});
+  }
+  const accounts=Array.from(accountMap.values());
+  return NextResponse.json({
+    configured:microsoftConfigured||googleConfigured,
+    microsoftConfigured,
+    googleConfigured,
+    connected:Boolean(active),
+    provider:active?.provider,
+    email:active?.email,
+    name:active?.name,
+    accounts,
+    microsoftConnected:accounts.some(a=>a.provider==="microsoft"),
+    googleConnected:accounts.some(a=>a.provider==="google"),
+  });
 }
