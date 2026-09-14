@@ -101,6 +101,20 @@ html[data-future-theme="galaxy"] .swatch.galaxy{background:radial-gradient(circl
   html[data-future-theme="galaxy"] .mobileBottomNav button.active,
   html[data-future-theme="galaxy"] .bottomNav button.active,
   html[data-future-theme="galaxy"] .v47MobileNav button.active{background:#ffe680!important;color:#000!important}
+
+  /* Keep floating actions separated on phones. Ask Future sits clearly above Map. */
+  html[data-future-theme="galaxy"] .v44MiniMap{
+    position:fixed!important;
+    right:14px!important;
+    bottom:118px!important;
+    z-index:41!important;
+  }
+  html[data-future-theme="galaxy"] .v33MiniChat{
+    position:fixed!important;
+    right:14px!important;
+    bottom:224px!important;
+    z-index:42!important;
+  }
 }
 
 /* Install / Download page: same black + yellow system. */
