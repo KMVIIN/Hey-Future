@@ -1,6 +1,7 @@
 "use client";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import type { Locale } from "@/lib/i18n";
+import { FUTURE_ACCOUNTING_EVENT, type FutureAccountingEntryInput } from "@/lib/accounting-events";
 
 type Entry={id:string;date:string;type:"income"|"expense";category:string;description:string;amount:number};
 const KEY="future.accounting.v1";
@@ -9,6 +10,18 @@ const today=()=>new Date().toISOString().slice(0,10);
 export default function AccountingPanel({locale}:{locale:Locale}){
  const [entries,setEntries]=useState<Entry[]>([]); const [date,setDate]=useState(today()); const [type,setType]=useState<Entry["type"]>("expense"); const [category,setCategory]=useState(""); const [description,setDescription]=useState(""); const [amount,setAmount]=useState("");
  useEffect(()=>{try{const raw=localStorage.getItem(KEY);if(raw)setEntries(JSON.parse(raw))}catch{}},[]);
+ useEffect(()=>{
+   const receive=(event:Event)=>{
+     const input=(event as CustomEvent<FutureAccountingEntryInput>).detail;
+     if(!input||!Number.isFinite(input.amount)||input.amount<=0||!input.description?.trim())return;
+     setEntries(current=>{
+       const next=[{id:crypto.randomUUID(),date:input.date||today(),type:input.type,category:input.category?.trim()||"Other",description:input.description.trim(),amount:input.amount},...current];
+       localStorage.setItem(KEY,JSON.stringify(next)); return next;
+     });
+   };
+   window.addEventListener(FUTURE_ACCOUNTING_EVENT,receive);
+   return()=>window.removeEventListener(FUTURE_ACCOUNTING_EVENT,receive);
+ },[]);
  function persist(next:Entry[]){setEntries(next);localStorage.setItem(KEY,JSON.stringify(next))}
  function add(e:FormEvent){e.preventDefault();const n=Number(String(amount).replace(",","."));if(!description.trim()||!Number.isFinite(n)||n<=0)return;persist([{id:crypto.randomUUID(),date,type,category:category.trim()||"Other",description:description.trim(),amount:n},...entries]);setDescription("");setAmount("")}
  const totals=useMemo(()=>{const income=entries.filter(x=>x.type==="income").reduce((a,b)=>a+b.amount,0);const expense=entries.filter(x=>x.type==="expense").reduce((a,b)=>a+b.amount,0);return {income,expense,balance:income-expense}},[entries]);
