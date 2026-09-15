@@ -21,7 +21,7 @@ export default function LoginPage() {
   async function signInWithGoogle() {
     setBusy(true); setMessage("");
     try {
-      const supabase = createClient();
+      const supabase = await createClient();
       if (!supabase) throw new Error("Sign-in is not available yet. Please try again later.");
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -38,7 +38,7 @@ export default function LoginPage() {
 
   async function submit(e: FormEvent) {
     e.preventDefault(); setBusy(true); setMessage("");
-    const supabase = createClient();
+    const supabase = await createClient();
     if (!supabase) { setMessage("Supabase is not configured yet."); setBusy(false); return; }
     if (mode === "signup") {
       const { error } = await supabase.auth.signUp({ email, password, options: { data: { display_name: name }, emailRedirectTo: `${location.origin}/auth/callback` } });
