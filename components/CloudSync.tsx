@@ -22,10 +22,11 @@ export default function CloudSync() {
     if (!isSupabaseConfigured()) return;
     let alive = true;
     let last = "";
-    const supabase = createClient();
 
     async function init() {
       const { data } = await supabase!.auth.getUser();
+      if (!data.user || !alive) return;
+      const { data } = await supabase.auth.getUser();
       if (!data.user || !alive) return;
       try {
         const response = await fetch("/api/state", { cache: "no-store" });
