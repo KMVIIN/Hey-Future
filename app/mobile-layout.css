@@ -1,76 +1,30 @@
 /* Future — shared mobile layout for Lavender, Sky and Galaxy.
    Colors stay owned by each theme. This file changes layout only. */
 
+/* Release badge: legacy JSX still contains 4.7; present the current deployed release. */
+.sideFooter > span { font-size:0 !important; }
+.sideFooter > span::after { content:"Future 5.2"; font-size:14px; font-weight:800; }
+.sideFooter > small { font-size:0 !important; }
+.sideFooter > small::after { content:"AI Secretary · Launch Candidate"; font-size:12px; }
+
 @media (max-width: 900px) {
   html, body { width:100%; max-width:100%; overflow-x:hidden; }
   body { min-height:100dvh; padding:0 !important; }
-
-  /* iOS/PWA safe areas: never draw interactive chrome under clock, Dynamic Island or home indicator. */
   .futureAppShell { min-height:100dvh !important; width:100% !important; max-width:100vw !important; overflow-x:hidden !important; }
   .futureTopbar, .topbar { padding-top:max(12px, env(safe-area-inset-top)) !important; }
-  .futureSidebar {
-    padding-top:max(18px, env(safe-area-inset-top)) !important;
-    padding-left:max(14px, env(safe-area-inset-left)) !important;
-    padding-bottom:max(18px, env(safe-area-inset-bottom)) !important;
-    max-height:100dvh !important;
-    overflow-y:auto !important;
-    overscroll-behavior:contain;
-  }
-  .mobileMenu, .mobileMenuPanel, .mobileMenuExtras {
-    padding-top:max(18px, env(safe-area-inset-top)) !important;
-    padding-bottom:max(18px, env(safe-area-inset-bottom)) !important;
-    max-height:100dvh !important;
-  }
-  .futureMain, main {
-    min-width:0 !important;
-    width:100% !important;
-    max-width:100vw !important;
-    padding-bottom:calc(110px + env(safe-area-inset-bottom)) !important;
-  }
-  .mobileBottomNav, .bottomNav, .v47MobileNav {
-    z-index:50 !important;
-    padding-bottom:max(8px, env(safe-area-inset-bottom)) !important;
-  }
-
-  /* Ask Future and Map & Places are content tiles, never fixed overlays. */
-  .v33MiniChat, .v44MiniMap {
-    position:relative !important; inset:auto !important; transform:none !important;
-    width:100% !important; max-width:none !important; min-height:72px !important;
-    margin:12px 0 0 !important; z-index:1 !important; border-radius:20px !important;
-    display:grid !important; grid-template-columns:auto minmax(0,1fr) auto !important;
-    align-items:center !important; gap:12px !important;
-  }
+  .futureSidebar { padding-top:max(18px, env(safe-area-inset-top)) !important; padding-left:max(14px, env(safe-area-inset-left)) !important; padding-bottom:max(18px, env(safe-area-inset-bottom)) !important; max-height:100dvh !important; overflow-y:auto !important; overscroll-behavior:contain; }
+  .mobileMenu, .mobileMenuPanel, .mobileMenuExtras { padding-top:max(18px, env(safe-area-inset-top)) !important; padding-bottom:max(18px, env(safe-area-inset-bottom)) !important; max-height:100dvh !important; }
+  .futureMain, main { min-width:0 !important; width:100% !important; max-width:100vw !important; padding-bottom:calc(110px + env(safe-area-inset-bottom)) !important; }
+  .mobileBottomNav, .bottomNav, .v47MobileNav { z-index:50 !important; padding-bottom:max(8px, env(safe-area-inset-bottom)) !important; }
+  .v33MiniChat, .v44MiniMap { position:relative !important; inset:auto !important; transform:none !important; width:100% !important; max-width:none !important; min-height:72px !important; margin:12px 0 0 !important; z-index:1 !important; border-radius:20px !important; display:grid !important; grid-template-columns:auto minmax(0,1fr) auto !important; align-items:center !important; gap:12px !important; }
   .v33MiniChat > div, .v44MiniMap > div { min-width:0 !important; text-align:left !important; }
   .v33MiniChat strong, .v44MiniMap strong, .v33MiniChat small, .v44MiniMap small { display:block !important; }
-
-  /* Full-screen workspaces/modals stay below the iPhone status area. */
-  .v33ChatBackdrop, [class*="workspaceBackdrop"], [class*="WorkspaceBackdrop"], [class*="modalBackdrop"], [class*="ModalBackdrop"] {
-    align-items:stretch !important; justify-content:stretch !important; padding:0 !important;
-  }
-  .v33ChatModal, [role="dialog"], [class*="workspaceModal"], [class*="WorkspaceModal"] {
-    width:100% !important; max-width:100vw !important;
-    height:100dvh !important; max-height:100dvh !important;
-    border-radius:0 !important; margin:0 !important;
-    padding-top:env(safe-area-inset-top) !important;
-    padding-bottom:env(safe-area-inset-bottom) !important;
-    overflow-x:hidden !important;
-  }
+  .v33ChatBackdrop, [class*="workspaceBackdrop"], [class*="WorkspaceBackdrop"], [class*="modalBackdrop"], [class*="ModalBackdrop"] { align-items:stretch !important; justify-content:stretch !important; padding:0 !important; }
+  .v33ChatModal, [role="dialog"], [class*="workspaceModal"], [class*="WorkspaceModal"] { width:100% !important; max-width:100vw !important; height:100dvh !important; max-height:100dvh !important; border-radius:0 !important; margin:0 !important; padding-top:env(safe-area-inset-top) !important; padding-bottom:env(safe-area-inset-bottom) !important; overflow-x:hidden !important; }
   .v33ChatMessages { min-height:0 !important; flex:1 1 auto !important; overflow:auto !important; }
   .v33ChatInput { flex:0 0 auto !important; }
-
-  /* Top command composer: text area gets the space; microphone stays compact. */
-  .commandComposer, .futureInputCard, .v32Command, .v32AskRow {
-    grid-template-columns:minmax(0,1fr) auto auto !important; align-items:center !important;
-  }
-  .commandComposer textarea, .futureInputCard textarea, .v32Command textarea, .v32AskRow textarea,
-  .commandComposer input, .futureInputCard input { min-width:0 !important; width:100% !important; }
-  .commandComposer .voiceButton, .futureInputCard .voiceButton, .v32Command .voiceButton, .v32AskRow .voiceButton,
-  .commandComposer button[aria-label*="voice" i], .futureInputCard button[aria-label*="voice" i] {
-    width:44px !important; min-width:44px !important; max-width:44px !important;
-    height:44px !important; padding:0 !important; flex:0 0 44px !important;
-  }
-
-  .localeSwitch, .languageSwitch, .langSwitch, .v32LangSwitch, .v32LocaleSwitch {
-    background:transparent !important; box-shadow:none !important; border:0 !important; padding:0 !important; gap:0 !important;
-  }
+  .commandComposer, .futureInputCard, .v32Command, .v32AskRow { grid-template-columns:minmax(0,1fr) auto auto !important; align-items:center !important; }
+  .commandComposer textarea, .futureInputCard textarea, .v32Command textarea, .v32AskRow textarea, .commandComposer input, .futureInputCard input { min-width:0 !important; width:100% !important; }
+  .commandComposer .voiceButton, .futureInputCard .voiceButton, .v32Command .voiceButton, .v32AskRow .voiceButton, .commandComposer button[aria-label*="voice" i], .futureInputCard button[aria-label*="voice" i] { width:44px !important; min-width:44px !important; max-width:44px !important; height:44px !important; padding:0 !important; flex:0 0 44px !important; }
+  .localeSwitch, .languageSwitch, .langSwitch, .v32LangSwitch, .v32LocaleSwitch { background:transparent !important; box-shadow:none !important; border:0 !important; padding:0 !important; gap:0 !important; }
 }
