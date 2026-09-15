@@ -460,7 +460,7 @@ export default function Home() {
           <a href={accountMode.signedIn?"/account":"/login"}>{accountMode.signedIn?"Account & Usage":"Guest · Sign in"}</a>
         </div>
         <div className="sideFooter">
-          <span>Future 4.7</span><small>Responsive Search & Maps</small>
+          <span>Future 5.2</span><small>AI Secretary · Launch Candidate</small>
         </div>
       </aside>
 
@@ -572,3 +572,4 @@ export default function Home() {
     </SaaSGate>
   );
 }
+

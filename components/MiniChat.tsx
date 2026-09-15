@@ -9,14 +9,14 @@ export default function MiniChat({messages,locale,status,onSubmit}:{messages:Con
   const [open,setOpen]=useState(false);
   const label=locale==="th"?"คุยกับ Future":locale==="fr"?"Parler à Future":"Chat with Future";
   return <>
-    <button className="futureChatLauncher" onClick={()=>setOpen(true)} aria-label={label} title={label}>
-      <span className="futureChatSun" aria-hidden="true" />
-      <span className="futureChatLauncherLabel">Future</span>
+    <button className="futureChatLauncher" onClick={()=>setOpen(true)} aria-label={label} title={label} aria-expanded={open} aria-haspopup="dialog">
+      <img className="futureChatIcon" src="/icon-192.png?v=5.2.0" alt="" width={58} height={58} />
+      <span className="futureChatLauncherLabel">{label}</span>
     </button>
     {open&&<div className="v33ChatBackdrop" role="dialog" aria-modal="true" aria-label={label} onMouseDown={(event)=>{if(event.target===event.currentTarget)setOpen(false)}}>
       <section className="v33ChatModal futureChatPopup">
         <header>
-          <div><span className="futureChatSun futureChatSunSmall"/><div><strong>{label}</strong><small>Think it. Say it. Done.</small></div></div>
+          <div><img className="futureChatIcon futureChatIconSmall" src="/icon-192.png?v=5.2.0" alt="" width={38} height={38}/><div><strong>{label}</strong><small>Think it. Say it. Done.</small></div></div>
           <button className="futureChatClose" onClick={()=>setOpen(false)} aria-label="Close">×</button>
         </header>
         <div className="v33ChatMessages"><ConversationPanel messages={messages}/></div>
@@ -25,3 +25,4 @@ export default function MiniChat({messages,locale,status,onSubmit}:{messages:Con
     </div>}
   </>
 }
+

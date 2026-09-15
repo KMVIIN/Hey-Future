@@ -12,7 +12,7 @@ type PlaceResult = {
   distanceKm?: number;
 };
 
-const USER_AGENT = process.env.PUBLIC_SEARCH_USER_AGENT || "Future-AI-Secretary/4.7 (public place search)";
+const USER_AGENT = process.env.PUBLIC_SEARCH_USER_AGENT || "Future-AI-Secretary/5.2 (public place search)";
 
 function finiteNumber(value: unknown) {
   const n = Number(value);
@@ -111,3 +111,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ results: [], error: "Place search is temporarily unavailable." }, { status: 502 });
   }
 }
+

@@ -12,5 +12,6 @@ export async function GET(){
   approval:{ready:true,rule:"Email send requires approved=true server-side; booking/payment remain non-executing until a real provider is connected."}
  };
  const missing=Object.entries(checks).flatMap(([area,v]:any)=>(v.required||[]).filter((n:string)=>!present(n)).map((name:string)=>({area,name})));
- return NextResponse.json({version:"4.6-launch-tomorrow",checks,missing,readyForPaidBeta:missing.length===0,note:"Configuration readiness only. Stripe checkout/webhook/portal, Outlook, AI chat and search still require an end-to-end production test before charging customers."});
+ return NextResponse.json({version:"5.2.0",checks,missing,readyForPaidBeta:missing.length===0,note:"Configuration readiness only. Stripe checkout/webhook/portal, Outlook, AI chat and search still require an end-to-end production test before charging customers."});
 }
+

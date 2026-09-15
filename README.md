@@ -1,4 +1,4 @@
-# Future 4.7 — Responsive Search & Maps
+# Future 5.2 — Responsive Search & Maps
 
 # Future 4.6 — Your AI Secretary
 
@@ -26,3 +26,4 @@ Open `/api/beta-readiness` after deployment. Read `LAUNCH-TOMORROW.md` before en
 4. Open `http://localhost:3000`
 
 Never commit `.env.local`, API secrets, `node_modules` or `.next`.
+

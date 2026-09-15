@@ -8,13 +8,13 @@ import "./future-polish.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hey-future.vercel.app"),
-  title: "Future — Your AI Secretary",
+  title: "Future 5.2 — Your AI Secretary",
   description: "Think it. Say it. Done. Future plans multi-step work, remembers what matters, and asks before sensitive actions.",
-  manifest: "/manifest.webmanifest",
-  appleWebApp: { capable: true, title: "Future", statusBarStyle: "black-translucent" },
-  icons: { apple: "/icon-192.png", icon: [{ url: "/icon-192.png", sizes: "192x192" }, { url: "/icon-512.png", sizes: "512x512" }] },
-  openGraph: { title: "Future — Your AI Secretary", description: "A calmer, smarter day — powered by Future.", url: "https://hey-future.vercel.app", siteName: "Future", images: [{ url: "/og-future.png", width: 1200, height: 630, alt: "Future — Your AI Secretary" }], type: "website" },
-  twitter: { card: "summary_large_image", title: "Future — Your AI Secretary", description: "Think it. Say it. Done.", images: ["/og-future.png"] },
+  manifest: "/manifest.webmanifest?v=5.2.0",
+  appleWebApp: { capable: true, title: "Future 5.2", statusBarStyle: "black-translucent" },
+  icons: { apple: "/icon-192.png?v=5.2.0", icon: [{ url: "/icon-192.png?v=5.2.0", sizes: "192x192" }, { url: "/icon-512.png?v=5.2.0", sizes: "512x512" }] },
+  openGraph: { title: "Future 5.2 — Your AI Secretary", description: "A calmer, smarter day — powered by Future.", url: "https://hey-future.vercel.app", siteName: "Future", images: [{ url: "/og-future.png", width: 1200, height: 630, alt: "Future 5.2 — Your AI Secretary" }], type: "website" },
+  twitter: { card: "summary_large_image", title: "Future 5.2 — Your AI Secretary", description: "Think it. Say it. Done.", images: ["/og-future.png"] },
 };
 
 export const viewport: Viewport = { themeColor: "#000000", width: "device-width", initialScale: 1, viewportFit: "cover" };
@@ -22,3 +22,4 @@ export const viewport: Viewport = { themeColor: "#000000", width: "device-width"
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="en"><body>{children}</body></html>;
 }
+

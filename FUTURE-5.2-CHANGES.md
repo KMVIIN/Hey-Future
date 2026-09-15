@@ -1,4 +1,4 @@
-# Future 4.7 — Responsive Search & Maps
+# Future 5.2 — Responsive Search & Maps
 
 ## Search & Discover
 - Place searches use public map data instead of generic web results, preventing unrelated results such as Windows support pages for restaurant queries.
@@ -21,3 +21,4 @@
 
 ## Launch hardening carried forward
 - Includes the Supabase server cookie typing fix and Stripe subscription-period typing fix required for the production build.
+

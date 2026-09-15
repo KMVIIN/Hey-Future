@@ -25,3 +25,13 @@ html[data-future-theme="galaxy"] input,html[data-future-theme="galaxy"] textarea
 html[data-future-theme="galaxy"] .emailProviderButton.active,html[data-future-theme="galaxy"] .softButton:hover,html[data-future-theme="galaxy"] .connectButton:hover,html[data-future-theme="galaxy"] .approveButton,html[data-future-theme="galaxy"] .primary{background:#ffe36a!important;color:#000!important;border-color:#ffe36a!important}
 html[data-future-theme="galaxy"] .emailProviderButton.active *,html[data-future-theme="galaxy"] .softButton:hover *,html[data-future-theme="galaxy"] .connectButton:hover *,html[data-future-theme="galaxy"] .approveButton *,html[data-future-theme="galaxy"] .primary *{color:#000!important}
 html[data-future-theme="galaxy"] .workflowPanel *,html[data-future-theme="galaxy"] .approvalCenter *,html[data-future-theme="galaxy"] .dashboardCard *,html[data-future-theme="galaxy"] .emailRow *,html[data-future-theme="galaxy"] .flightRow *,html[data-future-theme="galaxy"] .connectionRow *,html[data-future-theme="galaxy"] .accountingPanel *,html[data-future-theme="galaxy"] .accountingCard *,html[data-future-theme="galaxy"] [role="dialog"] *{color:#ffe36a}
+
+
+/* Future 5.2 app identity */
+.futureChatIcon{display:block;width:58px;height:58px;object-fit:contain;border-radius:14px;flex-shrink:0}
+.futureChatIconSmall{width:38px;height:38px;border-radius:10px}
+.futureChatLauncher{width:112px}
+.futureChatLauncherLabel{text-align:center;line-height:1.2}
+.googleSignIn{width:100%;margin-top:16px}
+.futureSidebar .sideFooter::before{content:none}
+.futureSidebar .sideFooter>span{display:block;font-size:14px;font-weight:800}
