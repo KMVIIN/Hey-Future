@@ -1,8 +1,10 @@
 import type { Locale } from "./i18n";
 import { hasMemoryCue, hasSchedulingCue, parseAssistantAction, type WebAction } from "./actions";
 import { isQuestionCommand } from "./questions";
+import { routeFutureIntent, type FutureIntent } from "./intent-router";
 
 export type RoutedCommand =
+  | { kind: "future_intent"; text: string; intent: Exclude<FutureIntent, { kind: "chat" }> }
   | { kind: "action"; text: string; action: WebAction }
   | { kind: "question"; text: string }
   | { kind: "memory"; text: string };
@@ -21,6 +23,11 @@ export function routeAssistantInput(text: string, locale: Locale): RoutedCommand
   return units.map((part) => {
     // Agenda/memory language belongs to Future's local task parser.
     if (hasSchedulingCue(part) || hasMemoryCue(part)) return { kind: "memory", text: part } as const;
+
+    // Future 5.2: route first-party capabilities before generic web actions/chat.
+    // This keeps Voice and Text on the same path because both enter through FutureInput -> handleCommand.
+    const futureIntent = routeFutureIntent(part);
+    if (futureIntent.kind !== "chat") return { kind: "future_intent", text: part, intent: futureIntent } as const;
 
     // Only explicit executable/search intents open an external action.
     const action = parseAssistantAction(part, locale);
