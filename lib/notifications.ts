@@ -56,7 +56,11 @@ export async function currentFuturePushSubscription() {
 export async function sendFutureTestPush() {
   const subscription = await currentFuturePushSubscription();
   if (!subscription) throw new Error('Enable notifications first.');
-  const response = await fetch('/api/push/test', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ endpoint: subscription.endpoint }) });
+  const response = await fetch('/api/push/test', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(subscription.toJSON()),
+  });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.error || 'Test push failed.');
   return true;
