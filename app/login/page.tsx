@@ -38,6 +38,7 @@ export default function LoginPage() {
 
   async function submit(e: FormEvent) {
     e.preventDefault(); setBusy(true); setMessage("");
+    try {
     const supabase = await createClient();
     if (!supabase) { setMessage("Supabase is not configured yet."); setBusy(false); return; }
     if (mode === "signup") {
@@ -47,7 +48,8 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) setMessage(error.message); else location.href = "/";
     }
-    setBusy(false);
+    } catch { setMessage("Sign-in could not be completed. Please try again."); }
+    finally { setBusy(false); }
   }
 
   return <main className="authPage"><section className="authCard"><div className="gateOrb"/><h1>Future</h1><p>Your AI Secretary</p>

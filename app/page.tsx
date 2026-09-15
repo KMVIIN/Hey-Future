@@ -26,6 +26,7 @@ import MiniChat from "@/components/MiniChat";
 import MapLauncher from "@/components/MapLauncher";
 import AccountingPanel from "@/components/AccountingPanel";
 import SaaSGate from "@/components/SaaSGate";
+import { createClient } from "@/lib/supabase/client";
 import CloudSync from "@/components/CloudSync";
 import { loadOrders, saveOrders, type FutureOrder } from "@/lib/orders";
 import { ClarificationError } from "@/lib/parser";
@@ -68,7 +69,7 @@ export default function Home() {
   const [activeWorkspace, setActiveWorkspace] = useState<null | "tasks" | "calendar" | "email" | "whatsapp" | "search" | "map" | "travel" | "shopping" | "orders" | "contacts" | "accounting" | "workflow" | "history" | "connections" | "approval" | "settings" | "customize">(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedMapPlace, setSelectedMapPlace] = useState<SearchPlace | null>(null);
-  const [accountMode, setAccountMode] = useState<{signedIn:boolean;plan:string}>({signedIn:false,plan:"guest"});
+  const [accountMode, setAccountMode] = useState<{signedIn:boolean;plan:string;name?:string}>({signedIn:false,plan:"guest"});
   const t = copy[locale];
 
   useEffect(() => {
@@ -99,12 +100,28 @@ export default function Home() {
 
 
   useEffect(() => {
-    fetch("/api/account/usage", { cache: "no-store" }).then(async (r) => {
-      if (!r.ok) { setAccountMode({ signedIn: false, plan: "guest" }); return; }
-      const d = await r.json();
-      setAccountMode({ signedIn: true, plan: String(d.plan || "free") });
-    }).catch(() => setAccountMode({ signedIn: false, plan: "guest" }));
+    let alive=true;
+    async function loadAccount(){
+      try{
+        const r=await fetch("/api/auth/user",{cache:"no-store"});
+        const identity=await r.json();
+        if(!alive)return;
+        if(!r.ok||!identity.authenticated){setAccountMode({signedIn:false,plan:"guest"});return;}
+        setAccountMode({signedIn:true,plan:"free",name:identity.user.name});
+        const usage=await fetch("/api/account/usage",{cache:"no-store"});
+        if(usage.ok){const d=await usage.json();if(alive)setAccountMode({signedIn:true,plan:String(d.plan||"free"),name:identity.user.name});}
+      }catch{if(alive)setStatus("Could not verify your Future account. Please refresh.");}
+    }
+    void loadAccount();return()=>{alive=false};
   }, []);
+
+  async function signOut(){
+    const client=await createClient();
+    if(!client){setStatus("Sign out unavailable. Please retry.");return;}
+    const {error}=await client.auth.signOut();
+    if(error){setStatus(error.message);return;}
+    location.href="/";
+  }
 
   useEffect(() => {
     if (!workflowHydrated) return;
@@ -470,7 +487,7 @@ export default function Home() {
           <div className="topLinks"><a href="#home" className="active">Home</a><a href="#features">Features</a><a href="#workflow">How it works</a><a href="#approval">Privacy</a></div>
           <div className="topActions">
             <div className="localeSwitch">{([['fr','FR'],['en','EN'],['th','TH']] as [Locale,string][]).map(([key,label]) => <button key={key} className={locale===key?'active':''} onClick={()=>changeLocale(key)}>{label}</button>)}</div>
-            <a className="accountTopLink" href={accountMode.signedIn?"/account":"/login"}>{accountMode.signedIn?"Account":"Guest · Sign in"}</a>
+            <a className="accountTopLink" href={accountMode.signedIn?"/account":"/login"}>{accountMode.signedIn?(accountMode.name||"Future Account"):"Guest · Sign in"}</a>{accountMode.signedIn&&<button type="button" className="accountTopLink" onClick={signOut}>Sign out</button>}
             <span className="emailStatusPill">{emailConnection.connected ? `✉ ${emailConnection.email}` : "Email not connected"}</span>
           </div>
         </header>
